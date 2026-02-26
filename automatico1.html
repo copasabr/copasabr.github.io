@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<html>
+<head>
+<title>COPASA</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="COPASA">
+
+
+<script>
+function click() {
+if (event.button==2||event.button==3) {
+oncontextmenu=&#39;return false&#39;;
+}
+}
+document.onmousedown=click
+document.oncontextmenu = new Function(&quot;return false;&quot;)
+</script> 
+
+<script>
+function mensagem(){
+    alert(&#39;Conteudo bloqueado!&#39;);
+    return false;
+}
+ 
+function bloquearCopia(Event){
+    var Event = Event ? Event : window.event;
+    var tecla = (Event.keyCode) ? Event.keyCode : Event.which;
+    if(tecla == 17){
+        mensagem();
+	}
+}
+</script>  
+
+<style>
+body {
+    background-color: transparent;
+} 
+</style>
+      
+</head>
+
+<body>
+
+<div align="center">
+
+<table style="background-color: transparent; width: 250px;" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<th height="79" style="border: 1px solid #800000;"><div align="center">
+<div style="margin-bottom: 1; margin-top: 0;">
+<span style="color: white; font-family: &quot;century gothic&quot;; font-style: italic; font-weight: 400;">
+<b>PROJETOS</b></span></div>
+</div>
+<div align="center">
+<select name="URL" onchange="window.open(this.value, '_blank')[this.form.URL.selectedIndex].value" style="color: black;">
+<option selected value="https://copasa.sharepoint.com/sites/sppe/SitePages/app.aspx" />SELECIONE UM ITEM:
+<option value="https://copasa.sharepoint.com/:l:/s/painel-inteligente/JACCTHljRzU_SK9W57rdx_HsAVj24FAbMsqTny354lNh8ws?nav=ZGMwMmZlZTgtNDUwYi00MDU5LWFmYjgtMTcyY2UwOTE3NzIx" />
+► ANÁLISE DE PROJETOS
+<option value="https://copasa.sharepoint.com/:l:/s/painel-inteligente/JACCTHljRzU_SK9W57rdx_HsAVj24FAbMsqTny354lNh8ws?nav=MzE0NzU1N2UtMjU3MC00ZmU5LTlkNTUtZjY2NzZmYzBhNmFk" />
+► UNIVERSALIZAÇÃO
+</select>
+</div>
+</th>
+</tr>
+</tbody></table>
+</div>
+<br />
+
+
+ <script>
+	document.onkeypress = bloquearCopia;
+	document.onkeydown = bloquearCopia;
+	document.oncontextmenu = mensagem;
+</script> 
+</body>
+</html>

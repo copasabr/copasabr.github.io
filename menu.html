@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Menu Responsivo – SPPE / COPASA</title>
+
+  <!-- Reset básico -->
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+  </style>
+
+  <!-- Estilos -->
+  <style>
+    :root{
+      --azul-escuro: #0A2540;  /* fundo barra */
+      --azul: #1E3A8A;         /* hover/seleção */
+      --azul-claro: #2563EB;   /* foco/realce */
+      --preto: #000000;        /* bordas/sombras */
+      --cinza-escuro: #111827; /* textos opcionais */
+      --branco: #FFFFFF;
+      --texto: #FFFFFF;
+      --texto-escuro: #0F172A;
+      --sombra: rgba(0,0,0,0.25);
+      --radius: 10px;          /* cantos para efeito “quadrado arredondado leve” */
+      --altura-barra: 64px;
+      --largura-max: 1280px;   /* útil mesmo em iframe largo */
+    }
+
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      color: var(--texto);
+      background: #0B1220; /* fundo neutro escuro p/ iframe */
+      line-height: 1.4;
+    }
+
+    /* ======== CONTAINER DA BARRA ======== */
+    .topbar{
+      position: sticky; top: 0; z-index: 1000;
+      background: linear-gradient(180deg, var(--azul-escuro), #08182C);
+      box-shadow: 0 6px 16px var(--sombra);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .topbar-inner{
+      max-width: var(--largura-max);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--altura-barra);
+      padding: 0 16px;
+      gap: 16px;
+    }
+
+    /* ======== LOGO / TÍTULO ======== */
+    .brand{
+      display: flex; align-items: center; gap: 12px;
+      min-width: 0;
+    }
+
+    .brand__mark{
+      width: 40px; height: 40px; border-radius: 8px;
+      background: radial-gradient(120% 120% at 30% 20%, #2F6FFF 0%, #103C8C 55%, #071A32 100%);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), 0 6px 16px var(--sombra);
+      border: 1px solid rgba(255,255,255,0.08);
+      flex: 0 0 auto;
+    }
+
+    .brand__title{
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      font-size: 1.05rem;
+      color: var(--branco);
+      white-space: nowrap;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.6);
+    }
+
+    /* ======== BOTÃO HAMBÚRGUER (MOBILE) ======== */
+    .nav-toggle{
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.04);
+      color: var(--branco);
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+    }
+    .nav-toggle:active{ transform: scale(0.98); }
+    .nav-toggle:hover{ background: rgba(255,255,255,0.08); }
+    .nav-toggle svg{ width: 22px; height: 22px; }
+
+    /* ======== MENU ======== */
+    nav{
+      position: relative;
+    }
+
+    .menu{
+      list-style: none; margin: 0; padding: 0;
+      display: flex; align-items: stretch; gap: 8px;
+    }
+
+    .menu > li{
+      position: relative;
+    }
+
+    /* Botões “largos e quadrados” */
+    .menu > li > a,
+    .menu > li > button{
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 18px;
+      min-height: 44px;                 /* acessível */
+      border-radius: var(--radius);     /* quadrado com leve raio */
+      background: rgba(255,255,255,0.06);
+      color: var(--branco);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+      font-size: 0.90rem;
+      white-space: nowrap;
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+    }
+
+    .menu > li > a:hover,
+    .menu > li > button:hover{
+      background: linear-gradient(180deg, rgba(37,99,235,0.35), rgba(14,55,121,0.35));
+      border-color: rgba(37,99,235,0.55);
+    }
+
+    .menu > li > a:focus-visible,
+    .menu > li > button:focus-visible{
+      outline: 2px solid var(--azul-claro);
+      outline-offset: 2px;
+    }
+
+    /* Indicador de submenu */
+    .menu > li.has-sub > button::after{
+      content: "▾";
+      margin-left: 8px;
+      font-size: 0.8em;
+      opacity: 0.9;
+    }
+
+    /* ======== SUBMENUS (nível 1) ======== */
+    .sub-menus{
+      position: absolute; top: calc(100% + 8px); left: 0;
+      min-width: 280px;
+      background: #0C1D34;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      box-shadow: 0 14px 28px rgba(0,0,0,0.35);
+      list-style: none; margin: 0; padding: 8px;
+      display: none;
+    }
+
+    .sub-menus li a,
+    .sub-menus li button{
+      display: flex; align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 8px;
+      color: var(--branco);
+      text-decoration: none;
+      background: transparent;
+      border: 0;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .sub-menus li a:hover,
+    .sub-menus li button:hover{
+      background: rgba(37,99,235,0.20);
+    }
+
+    /* Mostrar submenu no hover (desktop) */
+    @media (hover: hover){
+      .menu > li:hover > .sub-menus{
+        display: block;
+      }
+    }
+
+    /* ======== MULTINÍVEL (exemplo nível 2) ======== */
+    .sub-menus li.has-sub{
+      position: relative;
+    }
+    .sub-menus li.has-sub > button::after{
+      content: "▸";
+      margin-left: auto;
+      opacity: 0.9;
+    }
+    .sub-menus .sub-menus{
+      top: 0;
+      left: calc(100% + 8px);
+    }
+
+    /* ======== LAYOUT MOBILE ======== */
+    .nav-right{
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    @media (max-width: 960px){
+      .menu{
+        position: fixed;
+        left: 0; right: 0;
+        top: var(--altura-barra);
+        background: #071527;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+        flex-direction: column;
+        padding: 12px;
+        gap: 10px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height .25s ease;
+      }
+      .menu.open{
+        max-height: 75vh;
+        overflow: auto;
+      }
+
+      .menu > li > a,
+      .menu > li > button{
+        width: 100%;
+        justify-content: space-between;
+        font-size: 1rem;
+        padding: 14px 16px;
+      }
+
+      /* Submenus no mobile: ficam “dentro” do menu, colapsáveis */
+      .sub-menus{
+        position: static;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 10px;
+        box-shadow: none;
+        display: none;
+        margin-top: 8px;
+      }
+      .sub-menus.open{
+        display: block;
+      }
+
+      .sub-menus .sub-menus{
+        margin-left: 6px;
+      }
+
+      .nav-toggle{ display: inline-flex; }
+    }
+
+    /* ======== CONTEÚDO DEMO ======== */
+    main{
+      max-width: var(--largura-max);
+      margin: 24px auto;
+      padding: 0 16px 48px;
+    }
+    .card{
+      background: #0E2038;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.30);
+      color: var(--branco);
+    }
+    .muted{ color: rgba(255,255,255,0.75); }
+  </style>
+</head>
+<body>
+  <!-- ======== BARRA SUPERIOR ======== -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <div class="brand" aria-label="Aplicações SPPE">
+        <div class="brand__mark" aria-hidden="true"></div>
+        <div class="brand__title">CADASTRO DE DEMANDAS - SPPE</div>
+      </div>
+
+      <div class="nav-right">
+        <!-- Toggle do menu para mobile -->
+        <button class="nav-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-root">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ======== MENU ======== -->
+    <nav role="navigation" aria-label="Menu principal">
+      <ul id="menu-root" class="menu" role="menubar">
+        <!-- HOME -->
+        <li role="none">
+          <a role="menuitem"
+             href="https://copasa.sharepoint.com/sites/sppe/sitepages/app.aspx"
+             target="_blank" rel="noopener noreferrer">
+             HOME
+          </a>
+        </li>
+
+        <!-- PROJETOS (com submenu) -->
+        <li class="has-sub" role="none">
+          <!-- Em desktop o hover abre; em mobile o botão expande -->
+          <button type="button" role="menuitem" aria-haspopup="true" aria-expanded="false">
+            PROJETOS
+          </button>
+          <ul class="sub-menus" role="menu">
+            <li role="none">
+              <a role="menuitem"
+                 href="https://copasa.sharepoint.com/sites/painel-inteligente/_layouts/15/listforms.aspx?cid=NjM3OTRjODItMzU0Ny00ODNmLWFmNTYtZTdiYWRkYzdmMWVj&nav=ZGMwMmZlZTgtNDUwYi00MDU5LWFmYjgtMTcyY2UwOTE3NzIx"
+                 target="_blank" rel="noopener noreferrer">
+                 ANÁLISE DE PROJETOS
+              </a>
+            </li>
+            <li role="none">
+              <a role="menuitem"
+                 href="https://copasa.sharepoint.com/sites/painel-inteligente/_layouts/15/listforms.aspx?cid=NjM3OTRjODItMzU0Ny00ODNmLWFmNTYtZTdiYWRkYzdmMWVj&nav=MzE0NzU1N2UtMjU3MC00ZmU5LTlkNTUtZjY2NzZmYzBhNmFk"
+                 target="_blank" rel="noopener noreferrer">
+                 UNIVERSALIZAÇÃO
+              </a>
+            </li>
+
+            <!-- Exemplo de nível 2 (se quiser adicionar mais) -->
+            <!--
+            <li class="has-sub" role="none">
+              <button type="button" role="menuitem" aria-haspopup="true" aria-expanded="false">RELATÓRIOS</button>
+              <ul class="sub-menus" role="menu">
+                <li role="none"><a role="menuitem" href="#" target="_blank" rel="noopener noreferrer">Painel A</a></li>
+                <li role="none"><a role="menuitem" href="#" target="_blank" rel="noopener noreferrer">Painel B</a></li>
+              </ul>
+            </li>
+            -->
+          </ul>
+        </li>
+
+        <!-- GESTÃO DE CONTRATOS -->
+        <li role="none">
+          <a role="menuitem"
+             href="https://copasa.sharepoint.com/sites/sppe/SitePages/contratos.aspx"
+             target="_blank" rel="noopener noreferrer">
+             GESTÃO DE CONTRATOS
+          </a>
+        </li>
+
+        <!-- AQUISIÇÃO MATERIAIS / EQUIPAMENTOS -->
+        <li role="none">
+          <a role="menuitem"
+             href="https://copasa.sharepoint.com/sites/sppe/SitePages/materiais.aspx"
+             target="_blank" rel="noopener noreferrer">
+             AQUISIÇÃO MATERIAIS / EQUIPAMENTOS
+          </a>
+        </li>
+
+        <!-- REMANEJAMENTO DE RECURSOS -->
+        <li role="none">
+          <a role="menuitem"
+             href="https://copasa.sharepoint.com/sites/sppe/SitePages/remanejamento.aspx"
+             target="_blank" rel="noopener noreferrer">
+             REMANEJAMENTO DE RECURSOS
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ======== CONTEÚDO (opcional; pode remover quando usar em iframe) ======== -->
+  
+
+  <!-- ======== SCRIPTS ======== -->
+  <script>
+    (function(){
+      const menu = document.getElementById('menu-root');
+      const toggle = document.querySelector('.nav-toggle');
+
+      // Alternar menu (mobile)
+      function toggleMenu(open){
+        const willOpen = open ?? !menu.classList.contains('open');
+        menu.classList.toggle('open', willOpen);
+        toggle.setAttribute('aria-expanded', String(willOpen));
+        toggle.setAttribute('aria-label', willOpen ? 'Fechar menu' : 'Abrir menu');
+      }
+
+      toggle.addEventListener('click', () => toggleMenu());
+
+      // Clique fora para fechar em mobile
+      document.addEventListener('click', (e) => {
+        const isClickInside = e.target.closest('nav') || e.target.closest('.nav-toggle');
+        if(!isClickInside && menu.classList.contains('open')){
+          toggleMenu(false);
+        }
+      });
+
+      // Fechar com ESC
+      document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape'){
+          // Fecha menu principal
+          if(menu.classList.contains('open')) toggleMenu(false);
+          // Fecha submenus abertos no mobile
+          menu.querySelectorAll('.sub-menus.open').forEach(ul => {
+            ul.classList.remove('open');
+            const btn = ul.parentElement?.querySelector('button[aria-expanded]');
+            if(btn) btn.setAttribute('aria-expanded', 'false');
+          });
+        }
+      });
+
+      // Suporte a expansão de submenus no mobile por clique
+      // (Em desktop, o :hover já exibe; aqui mantemos clique para acessibilidade/touch)
+      menu.querySelectorAll('li.has-sub > button').forEach(btn => {
+        const parentLi = btn.parentElement;
+        const submenu = parentLi.querySelector(':scope > .sub-menus');
+
+        btn.addEventListener('click', (e) => {
+          // Se viewport é mobile (regra igual ao breakpoint do CSS)
+          const isMobile = window.matchMedia('(max-width: 960px)').matches;
+          if(isMobile){
+            const isOpen = submenu.classList.contains('open');
+            submenu.classList.toggle('open', !isOpen);
+            btn.setAttribute('aria-expanded', String(!isOpen));
+          }
+        });
+
+        // Acessibilidade por teclado: Enter/Space expande em qualquer viewport
+        btn.addEventListener('keydown', (e) => {
+          if(e.key === 'Enter' || e.key === ' '){
+            e.preventDefault();
+            const isOpen = submenu.classList.contains('open');
+            submenu.classList.toggle('open', !isOpen);
+            btn.setAttribute('aria-expanded', String(!isOpen));
+          }
+        });
+      });
+
+      // Melhorias: foco/blur fecha submenus em desktop quando navegado por teclado
+      const topItems = menu.querySelectorAll(':scope > li');
+      topItems.forEach(li => {
+        li.addEventListener('keydown', (e) => {
+          if(e.key === 'ArrowDown'){
+            const firstSub = li.querySelector(':scope > .sub-menus > li > a, :scope > .sub-menus > li > button');
+            if(firstSub){
+              e.preventDefault();
+              firstSub.focus();
+            }
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

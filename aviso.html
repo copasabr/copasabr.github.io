@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviso Importante</title>
+  <style>
+    :root {
+      --aviso-bg: #e6ffe6;      /* verde claro */
+      --aviso-border: #28a745;  /* verde destacado */
+      --aviso-text: #006400;    /* verde escuro para contraste */
+      --aviso-shadow: rgba(40, 167, 69, 0.25);
+    }
+
+    body {
+      margin: 0;
+	  background: url("blue.jpg") no-repeat center center fixed;
+      background-size: cover; /* ajusta a imagem para cobrir toda a tela */
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue",
+        Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    .aviso-ivec {
+      box-sizing: border-box;
+      width: min(100%, 900px);
+      padding: clamp(1rem, 2.5vw, 1.5rem);
+      background: linear-gradient(0deg, var(--aviso-bg), var(--aviso-bg));
+      border: 2px solid var(--aviso-border);
+      border-radius: 12px;
+      color: var(--aviso-text);
+      font: 600 1rem/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue",
+        Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      text-align: center;
+      box-shadow: 0 8px 24px var(--aviso-shadow);
+    }
+
+    .aviso-ivec p {
+      margin: 0;
+      font-size: clamp(1rem, 2.2vw, 1.125rem);
+      text-align: center;
+    }
+
+    /* Alto contraste e acessibilidade */
+    @media (prefers-reduced-motion: reduce) {
+      .aviso-ivec {
+        scroll-behavior: auto;
+      }
+    }
+
+    /* Responsividade: reforça legibilidade em telas muito pequenas */
+    @media (max-width: 360px) {
+      .aviso-ivec {
+        border-width: 3px;
+        border-radius: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="aviso-ivec" role="alert" aria-live="polite">
+   <p>ATENÇÃO!</p>
+   <p>
+      Solicitamos que todos os formulários de solicitação sejam preenchidos completamente.<br>
+      Essas informações são essenciais para garantir a qualidade dos registros e facilitar futuras consultas na base de dados do cliente.<br>
+      Após o envio, o sistema encaminhará automaticamente um e-mail padrão para que você possa acompanhar o andamento da demanda.<br>
+      <b>Importante</b>: solicitações enviadas com dados incompletos serão devolvidas para correção.
+    </p>
+  </div>
+</body>
+</html>

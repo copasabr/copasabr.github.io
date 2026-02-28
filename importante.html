@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviso Importante</title>
+  <style>
+    :root {
+      --aviso-bg: rgba(230, 240, 255, 0.9);
+      --aviso-border: #007bff;
+      --aviso-text: #003366;
+      --aviso-shadow: rgba(0, 0, 0, 0.1);
+    }
+    body {
+      margin: 0;
+      background: #f0f8ff;
+      background-image: url('blue.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    .aviso-ivec {
+      box-sizing: border-box;
+      width: min(90%, 600px);
+      padding: 1.5rem;
+      background-color: var(--aviso-bg);
+      border: 2px solid var(--aviso-border);
+      border-radius: 12px;
+      color: var(--aviso-text);
+      text-align: justify;
+      box-shadow: 0 8px 24px var(--aviso-shadow);
+    }
+    .aviso-ivec p {
+      margin: 0;
+      line-height: 1.1;
+      font-weight: normal;
+      font-size: clamp(1rem, 2.2vw, 1.125rem);
+    }
+  </style>
+</head>
+<body>
+  <div class="aviso-ivec" role="alert" aria-live="polite">
+   <p><center><strong>ATENÇÃO!</strong></center></p>
+   <p>
+      Solicitamos que todos os formulários sejam completamente preenchidos. As informações coletadas são essenciais para garantir a qualidade dos registros e facilitar futuras consultas na base de dados do cliente.<br>
+      Após o envio, o cliente receberá um e-mail padrão para acompanhamento da demanda. As solicitações enviadas com dados incompletos serão devolvidas para correção!
+    </p>
+  </div>
+</body>
+</html>

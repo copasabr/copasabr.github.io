@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu APP</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url("fundo2.png") no-repeat center center fixed;
+      background-size: cover; /* ajusta a imagem para cobrir toda a tela */
+    }
+
+    /* Estilo do menu */
+    nav {
+      background: linear-gradient(90deg, #001f3f, #0074D9); /* azul escuro para azul claro */
+      color: white;
+      position: relative;
+      width: 100%;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: nowrap;
+      width: 100%;
+    }
+
+    nav ul li {
+      flex: 1; /* todos os itens ocupam largura igual */
+      text-align: center;
+      position: relative;
+    }
+
+    nav ul li a {
+      display: block;
+      padding: 15px 0;
+      color: white;
+      text-decoration: none;
+      font-weight: normal;
+      width: 100%;
+    }
+
+    nav ul li a:hover {
+      background-color: #00509e; /* azul intermediário */
+    }
+
+    /* Submenu - 1º nível abaixo do principal */
+    nav ul li ul.sub-menus {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #001f3f;
+      min-width: 100%; /* submenu ocupa mesma largura do item pai */
+      z-index: 999;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    nav ul li:hover > ul.sub-menus {
+      display: block;
+    }
+
+    nav ul li ul.sub-menus li {
+      flex: none; /* submenu não divide igualmente */
+      position: relative; /* para posicionar subníveis */
+      width: 100%;
+    }
+
+    nav ul li ul.sub-menus li a {
+      padding: 10px 12px;
+      color: white;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    nav ul li ul.sub-menus li a:hover {
+      background-color: #0074D9;
+    }
+
+    /* --- Suporte a múltiplos níveis --- */
+
+    /* 2º nível abaixo de sub-menus */
+    nav ul li ul.sub-menus li ul {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 100%;
+      background-color: #001f3f;
+      min-width: 220px;
+      z-index: 1000;
+    }
+    nav ul li ul.sub-menus li:hover > ul {
+      display: block;
+    }
+
+    /* 3º nível (e seguintes) — mesmo padrão em cascata */
+    nav ul li ul.sub-menus li ul li ul {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 100%;
+      background-color: #001f3f;
+      min-width: 220px;
+      z-index: 1001;
+    }
+    nav ul li ul.sub-menus li ul li:hover > ul {
+      display: block;
+    }
+
+    /* Responsivo */
+    .menu-toggle {
+      display: none;
+      padding: 15px;
+      background-color: #001f3f;
+      color: white;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      nav ul li {
+        width: 100%;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      nav ul.showing {
+        display: block;
+      }
+
+      /* No mobile, subníveis aparecem empilhados em bloco */
+      nav ul li ul.sub-menus,
+      nav ul li ul.sub-menus li ul,
+      nav ul li ul.sub-menus li ul li ul {
+        position: static;
+        min-width: 100%;
+      }
+    }
+  </style>
+
+  <!-- Bloqueio de clique direito e Ctrl -->
+  <script>
+    function clickHandler(event) {
+      if (event.button === 2 || event.button === 3) {
+        document.oncontextmenu = function () { return false; };
+      }
+    }
+    document.onmousedown = clickHandler;
+    document.oncontextmenu = new Function("return false;");
+
+    function mensagem() {
+      alert('Conteúdo bloqueado!');
+      return false;
+    }
+
+    function bloquearCopia(Event) {
+      var e = Event ? Event : window.event;
+      var tecla = (e.keyCode) ? e.keyCode : e.which;
+      if (tecla === 17) {
+        mensagem();
+      }
+    }
+    document.onkeydown = bloquearCopia;
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="menu-toggle">☰ Menu</div>
+    <ul>
+      <!-- ========================================= -->
+      <!-- GESTÃO DE CONTRATOS E AQUISIÇÕES (principal) -->
+      <!-- ========================================= -->
+      <li>
+        <a class="ai" href="#" target="_self">⬇️ Gestão de Contratos e Aquisições</a>
+        <ul class="sub-menus">
+          <!-- ====== SUBMENU MULTINÍVEL (3 níveis adicionais) ====== -->
+
+          <!-- Contratos Continuados -->
+          <li>
+            <a href="#" target="_self">➡️ Contratos Continuados</a>
+            <ul>
+              <li><a href="https://copasa.sharepoint.com/sites/painel-inteligente/SitePages/contratos-continuados-licitacoes.aspx" target="_top">✏️ Licitação</a></li>
+            </ul>
+          </li>
+
+          <!-- Novas Contratações -->
+          <li>
+            <a href="#" target="_self">➡️ Novas Contratações</a>
+            <ul>
+              <li><a href="https://copasa.sharepoint.com/sites/painel-inteligente/SitePages/novas-contratacoes-contratacao-direta.aspx" target="_top">✏️ Contratação Direta</a></li>
+              <li>
+                <a href="https://copasa.sharepoint.com/sites/painel-inteligente/SitePages/novas-contratacoes-licitacoes.aspx" target="_top">✏️ Licitação</a>
+                <ul>
+                  <!-- (adicione itens do 3º nível aqui se necessário) -->
+                </ul>
+              </li>
+            </ul>
+          </li>
+
+          <!-- Aquisições (Materiais/Equipamentos) -->
+          <li>
+            <a href="#" target="_self">➡️ Aquisições (Materiais/Equipamentos)</a>
+            <ul>
+              <li><a href="https://copasa.sharepoint.com/sites/painel-inteligente/SitePages/aquisicoes-contratacao-direta.aspx" target="_top">✏️ Contratação Direta</a></li>
+              <li><a href="https://copasa.sharepoint.com/sites/painel-inteligente/SitePages/aquisicoes-licitacoes.aspx" target="_top">✏️ Licitação</a></li>
+              <li>
+                <a href="https://copasa.sharepoint.com/sites/painel-inteligente/SitePages/aquisicoes-arp.aspx" target="_top">✏️ Ata Registro Preço (APR)</a>
+                              </li>
+            </ul>
+          </li>
+
+          <!-- ====================================================== -->
+          <!-- A D I T I V O S  (NOVO BLOCO DE 3 NÍVEIS INSERIDO)     -->
+          <!-- ====================================================== -->
+          <li>
+            <!-- subnível 1 -->
+            <a href="#" target="_self">➡️ Aditivos</a>
+            <ul>
+              <!-- subnível 2 -->
+              <li>
+                <a href="https://copasa.sharepoint.com/sites/painel-inteligente/SitePages/aditivo-contrato-continuado.aspx" target="_top">✏️ Contratos Continuados</a>
+                              </li>
+
+              <!-- subnível 2 -->
+              <li>
+                <a href="https://copasa.sharepoint.com/sites/painel-inteligente/SitePages/aditivo-outras-contratacoes.aspx" target="_top">✏️ Outras Contratações</a>
+                              </li>
+
+              <!-- subnível 2 -->
+              <li>
+                <a href="https://copasa.sharepoint.com/sites/painel-inteligente/SitePages/aditivo-aquisicoes.aspx" target="_top">✏️ Aquisições</a>
+                
+              </li>
+            </ul>
+          </li>
+          <!-- ====== FIM DO SUBMENU MULTINÍVEL ====== -->
+        </ul>
+      </li>
+
+      <!-- ================= -->
+      <!-- P R O J E T O S  -->
+      <!-- ================= -->
+      <li>
+        <a class="ai" href="#" target="_self">⬇️ Projetos</a>
+        <ul class="sub-menus">
+          <!-- Corrigido: aspas do href e target -->
+          <li><a href="https://copasa.sharepoint.com/sites/painel-inteligente/SitePages/analise.aspx" target="_top">✏️ Análise de Projetos</a></li>
+          <li><a href="https://copasa.sharepoint.com/sites/painel-inteligente/SitePages/universalizacao.aspx" target="_top">✏️ Universalização</a></li>
+        </ul>
+      </li>
+
+      <!-- ============================== -->
+      <!-- R E M A N E J A M E N T O     -->
+      <!-- ============================== -->
+      <li>
+        <a class="ai" href="#" target="_self">⬇️ Remanejamento de Recursos</a>
+        <ul class="sub-menus">
+          <!-- Corrigido: aspas do href e target -->
+          <li><a href="https://copasa.sharepoint.com/sites/painel-inteligente/SitePages/remanejamento.aspx" target="_top">✏️ Solicitar Remanejamento</a></li>
+        </ul>
+      </li>
+
+    </ul>
+  </nav>
+
+  <script>
+    const toggle = document.querySelector(".menu-toggle");
+    const menu = document.querySelector("nav ul");
+    toggle.addEventListener("click", () => {
+      menu.classList.toggle("showing");
+    });
+  </script>
+</body>
+
+</html>
+

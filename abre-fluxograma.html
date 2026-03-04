@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Exibir Fluxograma</title>
+  <style>
+    :root{
+      --overlay-bg: rgba(0,0,0,0.55);
+      --modal-bg: #fff;
+      --modal-radius: 12px;
+      --modal-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      --header-bg: #0f62fe; /* azul IBM-like, ajuste à paleta da sua marca */
+      --header-fg: #fff;
+      --close-bg: transparent;
+      --close-fg: #fff;
+      --focus-ring: 0 0 0 3px rgba(15,98,254,0.35);
+    }
+
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+
+    /* Botão disparador */
+    .btn-fluxograma {
+      appearance: none;
+      border: none;
+      background: #0f62fe;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(15,98,254,0.35);
+      transition: transform .06s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .btn-fluxograma:hover { background: #0353e9; }
+    .btn-fluxograma:active { transform: translateY(1px); }
+    .btn-fluxograma:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+    /* Overlay + modal */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--overlay-bg);
+      display: none;           /* controlado por .open */
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .overlay.open { display: flex; }
+
+    .modal {
+      width: min(92vw, 1200px);
+      height: min(86vh, 900px);
+      background: var(--modal-bg);
+      border-radius: var(--modal-radius);
+      box-shadow: var(--modal-shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--header-bg);
+      color: var(--header-fg);
+    }
+
+    .modal__title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .modal__actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal__link {
+      color: #dfe8ff;
+      text-decoration: underline;
+      font-size: 13px;
+    }
+    .modal__link:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+    .modal__close {
+      appearance: none;
+      border: none;
+      background: var(--close-bg);
+      color: var(--close-fg);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+    }
+    .modal__close:hover { background: rgba(255,255,255,0.12); }
+    .modal__close:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+
+    .modal__body {
+      position: relative;
+      flex: 1;
+      background: #f6f8fb;
+    }
+
+    .modal__iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+    }
+
+    /* Aviso / fallback */
+    .modal__fallback {
+      position: absolute;
+      inset: 0;
+      display: none;           /* aparece se iframe falhar */
+      padding: 24px;
+      color: #1f2937;
+      background: #fff;
+      overflow: auto;
+    }
+    .modal__fallback.show { display: block; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Botão que abre o modal -->
+  <button class="btn-fluxograma" id="btnAbrirFluxograma" type="button" aria-haspopup="dialog" aria-controls="modalFluxograma">
+    Exibir fluxograma
+  </button>
+
+  <!-- Overlay + Modal -->
+  <div class="overlay" id="overlayFluxograma" role="presentation">
+    <div class="modal" id="modalFluxograma" role="dialog" aria-modal="true" aria-labelledby="tituloFluxograma">
+      <div class="modal__header">
+        <h2 class="modal__title" id="tituloFluxograma">Fluxograma</h2>
+        <div class="modal__actions">
+          <!-- Fallback para abrir em nova guia -->
+          <a classcopasabr.github.io/fluxograma.html
+            Abrir em nova guia
+          </a>
+          <button class="modal__close" id="btnFecharFluxograma" type="button" aria-label="Fechar (Esc)">
+            ×
+          </button>
+        </div>
+      </div>
+      <div class="modal__body">
+        <iframe
+          id="iframeFluxograma"
+          class="modal__iframe"
+          src="about:(p.ex. X-Frame-Options) -->
+        <div class="modal__fallback" id="fallbackFluxograma" aria-live="polite">
+          <h3>Não foi possível incorporar o fluxograma</h3>
+          <p>
+            O site pode bloquear a exibição em outras páginas. Clique em
+            https://copasabr.github.io/fluxograma.html Abrir em nova guia</a>
+            para visualizá-lo.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const URL_FLUXO = "https://copasabr.github.io/fluxograma.html";
+
+      const btnOpen = document.getElementById('btnAbrirFluxograma');
+      const overlay = document.getElementById('overlayFluxograma');
+      const modal = document.getElementById('modalFluxograma');
+      const btnClose = document.getElementById('btnFecharFluxograma');
+      const iframe = document.getElementById('iframeFluxograma');
+      const fallback = document.getElementById('fallbackFluxograma');
+
+      // Abrir modal
+      function openModal() {
+        // Carrega o iframe somente ao abrir (melhora performance)
+        iframe.src = URL_FLUXO;
+        overlay.classList.add('open');
+
+        // Foco no título para leitores de tela
+        const title = document.getElementById('tituloFluxograma');
+        title && title.focus && title.focus();
+
+        // Temporizador de fallback: se não carregar em X ms, exibe aviso
+        startLoadWatchdog();
+        trapFocus(true);
+      }
+
+      // Fechar modal
+      function closeModal() {
+        overlay.classList.remove('open');
+        // Limpa o src para parar carregamento/processos do iframe
+        iframe.src = 'about:blank';
+        fallback.classList.remove('show');
+        btnOpen.focus();
+        trapFocus(false);
+      }
+
+      // Clique no botão de abrir
+      btnOpen.addEventListener('click', openModal);
+
+      // Clique no botão de fechar
+      btnClose.addEventListener('click', closeModal);
+
+      // Clique fora do modal fecha (somente se clicar no overlay)
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal();
+      });
+
+      // Fechar via ESC
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) {
+          e.preventDefault();
+          closeModal();
+        }
+      });
+
+      // Watchdog de carregamento do iframe
+      let watchdogTimer = null;
+      function startLoadWatchdog() {
+        clearTimeout(watchdogTimer);
+        fallback.classList.remove('show');
+
+        // Se o iframe não emitir 'load' em 3s, mostra fallback.
+        watchdogTimer = setTimeout(() => {
+          // Alguns sites bloqueiam em iframe, então o evento 'load' pode nem disparar.
+          // Forçamos a exibição do fallback após o timeout.
+          if (overlay.classList.contains('open')) {
+            fallback.classList.add('show');
+          }
+        }, 3000);
+      }
+
+      // Se o iframe carregar, ocultamos o fallback (se chegou a aparecer)
+      iframe.addEventListener('load', () => {
+        clearTimeout(watchdogTimer);
+        // Alguns bloqueios ainda podem deixar a tela vazia; mantemos simples aqui.
+        fallback.classList.remove('show');
+      });
+
+      // Acessibilidade: "focus trap" simples dentro do modal
+      let prevTabFocus = null;
+      function trapFocus(enable) {
+        if (!enable) {
+          if (prevTabFocus) prevTabFocus.removeEventListener('keydown', trapHandler, true);
+          document.removeEventListener('keydown', trapHandler, true);
+          return;
+        }
+        document.addEventListener('keydown', trapHandler, true);
+      }
+      function trapHandler(e) {
+        if (!overlay.classList.contains('open')) return;
+        if (e.key !== 'Tab') return;
+
+        const focusable = modal.querySelectorAll(
+          'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        );
+        const list = Array.prototype.slice.call(focusable)
+          .filter(el => !el.hasAttribute('disabled') && el.offsetParent !== null);
+        if (list.length === 0) return;
+
+        const first = list[0];
+        const last = list[list.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

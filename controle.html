@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu APP</title>
+  
+  <!-- Bloqueio de clique direito e Ctrl -->
+  <script>
+    function clickHandler(event) {
+      if (event.button === 2 || event.button === 3) {
+        document.oncontextmenu = function () { return false; };
+      }
+    }
+    document.onmousedown = clickHandler;
+    document.oncontextmenu = new Function("return false;");
+
+    function mensagem() {
+      alert('Conteúdo bloqueado!');
+      return false;
+    }
+
+    function bloquearCopia(Event) {
+      var e = Event ? Event : window.event;
+      var tecla = (e.keyCode) ? e.keyCode : e.which;
+      if (tecla === 17) {
+        mensagem();
+      }
+    }
+    document.onkeydown = bloquearCopia;
+  </script>
+</head>
+
+<body>
+<style>
+.mesmo-tamanho {
+width: 90%;
+white-space: normal;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+</style>
+
+<div align="center">
+<div align="center"><a target="_blank" href="https://copasa.sharepoint.com/:l:/s/painel-inteligente/JAAbGjb0Jd_fT4xuYZZBQhkFAbrIBPNOAbIrMev_htlZyYY"><button type="button" class="mesmo-tamanho" style="background: #18669a; border-radius: 50px; padding: 10px; cursor: pointer; color: #fff; border: none; font-size: 16px;">ANÁLISE DE PROJETOS</button></a></div>
+<div align="center"><a target="_blank" href="https://copasa.sharepoint.com/:l:/s/painel-inteligente/JACsqBymAGIHRKkyYZMT2v8RAef47HJvkpGWvEqVjeiZUBI"><button type="button" class="mesmo-tamanho" style="background: #18669a; border-radius: 50px; padding: 10px; cursor: pointer; color: #fff; border: none; font-size: 16px;">UNIVERSALIZAÇÃO</button></a></div>
+<div align="center"><a target="_blank" href="https://copasa.sharepoint.com/:l:/s/painel-inteligente/JAAkN7_AVvRfQLONt9lqPQIEASQeDm-w4Zi_SjYn3WFp_hw"><button type="button" class="mesmo-tamanho" style="background: #18669a; border-radius: 50px; padding: 10px; cursor: pointer; color: #fff; border: none; font-size: 16px;">AQUISIÇÕES (MATERIAIS/EQUIPAMENTOS)</button></a></div>
+<div align="center"><a target="_blank" href="https://copasa.sharepoint.com/:l:/s/painel-inteligente/JAC7sx3IqD6wQreqhKfiKI7eAXu8keJFZV2-vRifQq_Ieuw"><button type="button" class="mesmo-tamanho" style="background: #18669a; border-radius: 50px; padding: 10px; cursor: pointer; color: #fff; border: none; font-size: 16px;">NOVAS CONTRATAÇÕES</button></a></div>
+<div align="center"><a target="_blank" href="https://copasa.sharepoint.com/:l:/s/painel-inteligente/JADPKhKybBJUS4UIVCnUEimXAQct9CGfLjsT3Rvl06iFrVk"><button type="button" class="mesmo-tamanho" style="background: #18669a; border-radius: 50px; padding: 10px; cursor: pointer; color: #fff; border: none; font-size: 16px;">CONTRATOS CONTINUADOS / LICITAÇÕES</button></a></div>
+<div align="center"><a target="_blank" href="https://copasa.sharepoint.com/:l:/s/painel-inteligente/JACj3Z9Wg6UMRZ1-fllaomCgAbOl0UOVs7cjXvh4jgGupgY"><button type="button" class="mesmo-tamanho" style="background: #18669a; border-radius: 50px; padding: 10px; cursor: pointer; color: #fff; border: none; font-size: 16px;">ADITIVOS CONTRATUAIS</button></a></div>
+<div align="center"><a target="_blank" href="https://copasa.sharepoint.com/:l:/s/painel-inteligente/JABcQf3GHSZ7TqgReKmh-b4nASJqc0oMbbgTdAISxeJoZcY"><button type="button" class="mesmo-tamanho" style="background: #18669a; border-radius: 50px; padding: 10px; cursor: pointer; color: #fff; border: none; font-size: 16px;">REMANEJAMENTO DE RECURSOS</button></a></div>
+</div>
+
+<script>
+    const toggle = document.querySelector(".menu-toggle");
+    const menu = document.querySelector("nav ul");
+    toggle.addEventListener("click", () => {
+      menu.classList.toggle("showing");
+    });
+  </script>
+</body>
+
+</html>

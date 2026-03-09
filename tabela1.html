@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Documentação Solicitada – Gestão de Contratos e Aquisições</title>
+
+<style>
+  :root{
+    --bg:#0b1220;
+    --card:#111827;
+    --muted:#9ca3af;
+    --text:#e5e7eb;
+    --accent:#60a5fa;
+    --req:#16a34a;
+    --off:#e5e7eb;
+    --off-txt:#111827;
+    --head:#1f2937;
+    --stripe:#0f172a;
+    --border:#253046;
+  }
+  html,body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,sans-serif;margin:0}
+  h1{font-size:clamp(1.2rem,1.2rem + 1vw,1.8rem);margin:24px 16px}
+  .table-wrap{margin:16px; background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden}
+  .table-scroll{overflow:auto}
+  table{border-collapse:separate;border-spacing:0;width:100%;min-width:980px}
+  thead th{
+    position:sticky;top:0;z-index:2;background:linear-gradient(180deg,var(--head),#111827);
+    color:#cbd5e1;text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);font-weight:600
+  }
+  tbody td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+  tbody tr:nth-child(even){background:var(--stripe)}
+  .pill{display:inline-block;padding:.25rem .55rem;border-radius:999px;font-size:.80rem;line-height:1;color:#fff;background:var(--req);font-weight:600}
+  .pill.off{background:var(--off);color:var(--off-txt)}
+  .group{font-weight:700;color:#f8fafc}
+  .sub{color:#cbd5e1}
+  .tipo{color:#e2e8f0}
+  .note{color:var(--muted);font-size:.9rem;margin:8px 16px 18px}
+  .legend{display:center;gap:10px;align-items:center;margin:0 16px 12px}
+  .legend span{font-size:.85rem;color:var(--muted)}
+
+  /* Compactação em telas pequenas */
+  @media (max-width:720px){
+    thead th:nth-child(1), tbody td:nth-child(1){position:sticky;left:0;background:linear-gradient(180deg,var(--head),#0b1220);z-index:3}
+    thead th:nth-child(2), tbody td:nth-child(2){position:sticky;left:220px;background:linear-gradient(180deg,var(--head),#0b1220);z-index:2}
+    table{min-width:860px}
+  }
+
+  /* =============================== */
+  /* CENTRALIZAÇÃO DAS COLUNAS PEDIDAS */
+  /* =============================== */
+  thead th:nth-child(4),
+  thead th:nth-child(5),
+  thead th:nth-child(6),
+  thead th:nth-child(7),
+  tbody td:nth-child(4),
+  tbody td:nth-child(5),
+  tbody td:nth-child(6),
+  tbody td:nth-child(7) {
+    text-align: center;
+  }
+</style>
+</head>
+
+<body>
+  <h3><center>Documentação Solicitada – Gestão de Contratos e Aquisições</center></h3>
+
+  <div class="legend">
+  <center><span class="pill">X</span> <span>Indica documentação obrigatória.</span></center>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table aria-label="Tabela de documentos obrigatórios por processo, subprocesso e tipo">
+        <thead>
+          <tr>
+            <th style="min-width:220px">Processo</th>
+            <th style="min-width:220px">Subprocesso</th>
+            <th style="min-width:200px">Tipo</th>
+            <th>Nota Técnica</th>
+            <th>CI</th>
+            <th>Planilha Orçamentária</th>
+            <th>Análise/Estudo</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- CONTRATOS CONTINUADOS -->
+          <tr>
+            <td class="group">Contratos Continuados</td>
+            <td class="sub">Licitação</td>
+            <td class="tipo">—</td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+          </tr>
+
+          <!-- NOVAS CONTRATAÇÕES -->
+          <tr>
+            <td class="group">Novas Contratações</td>
+            <td class="sub">Contratação Direta</td>
+            <td class="tipo">—</td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+          </tr>
+
+          <tr>
+            <td class="group">Novas Contratações</td>
+            <td class="sub">Licitação</td>
+            <td class="tipo">—</td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+          </tr>
+
+          <!-- AQUISIÇÕES (Materiais/Equipamentos) -->
+          <tr>
+            <td class="group">Aquisições (Materiais/Equipamentos)</td>
+            <td class="sub">Contratação Direta</td>
+            <td class="tipo">—</td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+          </tr>
+
+          <tr>
+            <td class="group">Aquisições (Materiais/Equipamentos)</td>
+            <td class="sub">Licitação</td>
+            <td class="tipo">—</td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+          </tr>
+
+          <!-- ARP / Subcontrato -->
+          <tr>
+            <td class="group">Aquisições (Materiais/Equipamentos)</td>
+            <td class="sub">ARP</td>
+            <td class="tipo">Subcontrato</td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+          </tr>
+
+          <!-- ARP / Pedidos -->
+          <tr>
+            <td class="group">Aquisições (Materiais/Equipamentos)</td>
+            <td class="sub">ARP</td>
+            <td class="tipo">Pedidos</td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill off">—</span></td>
+          </tr>
+
+          <!-- ADITIVOS – Contratos Continuados -->
+          <tr>
+            <td class="group">Aditivos</td>
+            <td class="sub">Contratos Continuados</td>
+            <td class="tipo">Valor</td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+          </tr>
+
+          <tr>
+            <td class="group">Aditivos</td>
+            <td class="sub">Contratos Continuados</td>
+            <td class="tipo">Prazo</td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+          </tr>
+
+          <tr>
+            <td class="group">Aditivos</td>
+            <td class="sub">Contratos Continuados</td>
+            <td class="tipo">Valor/Prazo</td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+          </tr>
+
+          <tr>
+            <td class="group">Aditivo</td>
+            <td class="sub">Contratos Continuados</td>
+            <td class="tipo">Adequação s/ Alteração de Valor</td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+          </tr>
+
+          <!-- ADITIVOS – Outras Contratações -->
+          <tr>
+            <td class="group">Aditivos</td>
+            <td class="sub">Outras Contratações</td>
+            <td class="tipo">Valor</td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+          </tr>
+
+          <tr>
+            <td class="group">Aditivos</td>
+            <td class="sub">Outras Contratações</td>
+            <td class="tipo">Prazo</td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+          </tr>
+
+          <tr>
+            <td class="group">Aditivos</td>
+            <td class="sub">Outras Contratações</td>
+            <td class="tipo">Valor/Prazo</td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+          </tr>
+
+          <tr>
+            <td class="group">Aditivos</td>
+            <td class="sub">Outras Contratações</td>
+            <td class="tipo">Adequação s/ Alteração de Valor</td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+          </tr>
+
+          <!-- ADITIVOS – Aquisições (Prazos) -->
+          <tr>
+            <td class="group">Aditivos</td>
+            <td class="sub">Aquisições</td>
+            <td class="tipo">Prazo p/ ARP</td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill off">—</span></td>
+          </tr>
+
+          <tr>
+            <td class="group">Aditivos</td>
+            <td class="sub">Aquisições</td>
+            <td class="tipo">Prazo p/ Subcontrato</td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill">X</span></td>
+            <td><span class="pill off">—</span></td>
+            <td><span class="pill off">—</span></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="note">
+    <center>Desenvolvido por Marco Sousa - Equipe SPPE/GNPO</center>
+  </p>
+</body>
+</html>

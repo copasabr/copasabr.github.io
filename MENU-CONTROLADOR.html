@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu APP</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center center;
+    }
+
+    /* ======================== */
+    /* SELETOR DE PLANO DE FUNDO */
+    /* ======================== */
+    .bg-selector {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+     14px;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+      font-size: 14px;
+      z-index: 9999;
+    }
+
+    .bg-selector span {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .bg-btn {
+      border: none;
+      padding: 6px;
+      margin: 4px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: transform .2s;
+      width: 70px;
+      height: 45px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .bg-btn:hover {
+      transform: scale(1.08);
+    }
+
+    .bg-selected {
+      outline: 3px solid #0074D9;
+    }
+
+    /* ======================== */
+    /* ESTILOS ORIGINAIS DO MENU */
+    /* ======================== */
+
+    nav {
+      background: linear-gradient(90deg, #001f3f, #0074D9);
+      color: white;
+      position: relative;
+      width: 100%;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: nowrap;
+      width: 100%;
+    }
+
+    nav ul li {
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+
+    nav ul li a {
+      display: block;
+      padding: 15px 0;
+      color: white;
+      text-decoration: none;
+      width: 100%;
+    }
+
+    nav ul li a:hover {
+      background-color: #00509e;
+    }
+
+    nav ul li ul.sub-menus {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #001f3f;
+      min-width: 100%;
+      z-index: 999;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    nav ul li:hover > ul.sub-menus {
+      display: block;
+    }
+
+    nav ul li ul.sub-menus li {
+      flex: none;
+      width: 100%;
+    }
+
+    nav ul li ul.sub-menus li a {
+      padding: 10px 12px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    nav ul li ul.sub-menus li ul {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 100%;
+      background-color: #001f3f;
+      min-width: 220px;
+      z-index: 1000;
+    }
+
+    nav ul li ul.sub-menus li:hover > ul {
+      display: block;
+    }
+
+    .menu-toggle {
+      display: none;
+      padding: 15px;
+      background-color: #001f3f;
+      color: white;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      nav ul.showing {
+        display: block;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      nav ul li ul.sub-menus,
+      nav ul li ul.sub-menus li ul {
+        position: static;
+        min-width: 100%;
+      }
+    }
+  </style>
+  
+  <style>
+  .texto-branco {
+    color: white;
+  }
+</style>
+
+
+  <!-- Bloqueio de clique direito (se desejar manter) -->
+  <script>
+    document.oncontextmenu = () => false;
+  </script>
+
+</head>
+
+<body>
+
+  <!-- ========= MENU ORIGINAL ========= -->
+  <nav>
+    <div class="menu-toggle">☰ Menu</div>
+    <ul>
+      <li>
+        <a class="ai" href="#" target="_self">✒️ Gestão de Contratos e Aquisições</a>
+        <ul class="sub-menus">
+
+          <li>
+            <a href="#" target="_self">➡️ Contratos Continuados</a>
+            <ul>
+              <li><a href="https://copasa.sharepoint.com/:l:/r/sites/painel-inteligente/Lists/TBL_CONTRATOS_CONTIN_LIC?e=W1bjVT" target="_top">✒️ Licitação</a></li>
+            </ul>
+          </li>
+
+          <li>
+            <a href="#" target="_self">➡️ Novas Contratações</a>
+            <ul>
+              <li><a href="https://copasa.sharepoint.com/:l:/r/sites/painel-inteligente/Lists/TBL_CT_CONT_DIRETA?e=b2Pasq" target="_top">✒️ Licitação ou Dispensa</a></li>
+            </ul>
+          </li>
+
+          <li>
+            <a href="#" target="_self">➡️ Aquisições (Materiais/Equipamentos)</a>
+            <ul>
+              <li><a href="https://copasa.sharepoint.com/:l:/r/sites/painel-inteligente/Lists/TBL_CT_AQUISICOES?e=xHEO2k" target="_top">✒️ Compras e Contratações</a></li>
+            </ul>
+          </li>
+
+          <li>
+            <a href="#" target="_self">➡️ Aditivos</a>
+            <ul>
+              <li><a href="https://copasa.sharepoint.com/:l:/r/sites/painel-inteligente/Lists/TBL_ADITIVOS_C_CONT?e=7AMlvr" target="_top">✒️ Alterações Contratuais</a></li>
+            </ul>
+          </li>
+
+        </ul>
+      </li>
+
+      <li>
+        <a class="ai" href="#" target="_self">✒️ Projetos</a>
+        <ul class="sub-menus">
+          <li><a href="https://copasa.sharepoint.com/:l:/r/sites/painel-inteligente/Lists/TBL_PROJETOS_ANALISE?e=NNHTE0" target="_top">✒️ Análise de Projetos</a></li>
+          <li><a href="https://copasa.sharepoint.com/:l:/r/sites/painel-inteligente/Lists/TBL_PROJETOS_UNIVERSALIZA?e=6QZBQu" target="_top">✒️ Universalização</a></li>
+        </ul>
+      </li>
+
+      <li>
+        <a class="ai" href="#" target="_self">✒️ Remanejamento de Recursos</a>
+        <ul class="sub-menus">
+          <li><a href="https://copasa.sharepoint.com/sites/painel-inteligente/Lists/Remanejamento%20Custeio/AllItems.aspx" target="_top">✒️ Custeio</a></li>
+          <li><a href="https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_PROC_REMANEJAMENTO/AllItems.aspx" target="_top">✒️ Investimento</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ========================= -->
+  <!-- SELETOR DE PLANO DE FUNDO -->
+  <!-- ========================= -->
+  <div class="bg-selector">
+    <span style="color: white;">Plano de Fundo:</span>
+    <button class="bg-btn" data-img="flores.jpg" style="background-image:url('flores.jpg');"></button>
+    <button class="bg-btn" data-img="tecnologia.jpg" style="background-image:url('tecnologia.jpg');"></button>
+    <button class="bg-btn" data-img="saneamento.jpg" style="background-image:url('saneamento.jpg');"></button>
+  </div>
+
+  <script>
+    const botoes = document.querySelectorAll(".bg-btn");
+
+    // Carrega fundo salvo
+    function carregarFundo() {
+      const salvo = localStorage.getItem("fundoAPP");
+      if (salvo) {
+        document.body.style.backgroundImage = `url('${salvo}')`;
+
+        botoes.forEach(btn => {
+          btn.classList.toggle("bg-selected", btn.dataset.img === salvo);
+        });
+      } else {
+        document.body.style.backgroundImage = "url('flores.jpg')";
+      }
+    }
+
+    // Seleção ao clicar
+    botoes.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const img = btn.dataset.img;
+
+        document.body.style.backgroundImage = `url('${img}')`;
+        localStorage.setItem("fundoAPP", img);
+
+        botoes.forEach(b => b.classList.remove("bg-selected"));
+        btn.classList.add("bg-selected");
+      });
+    });
+
+    carregarFundo();
+
+    // Menu mobile
+    const toggle = document.querySelector(".menu-toggle");
+    const menu = document.querySelector("nav ul");
+    toggle.addEventListener("click", () => {
+      menu.classList.toggle("showing");
+    });
+  </script>
+
+</body>
+</html>

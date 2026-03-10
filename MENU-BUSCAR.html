@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu APP</title>
+
+  <style>
+    :root{
+      --azul-escuro: #001f3f;
+      --azul-claro: #0074D9;
+      --texto: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url("database.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+
+    /* ====== LAYOUT EM 3 COLUNAS ====== */
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr; /* três colunas iguais */
+      gap: 20px;
+      padding: 24px;
+      min-height: 100vh;
+      backdrop-filter: saturate(110%) contrast(105%);
+    }
+
+    .col {
+      /* opcional: leve fundo translúcido para legibilidade */
+      /* background: rgba(0,0,0,0.15); */
+      padding: 8px;
+      box-sizing: border-box;
+      min-height: 60vh;
+    }
+
+    /* ====== BOTÕES DA COLUNA ESQUERDA ====== */
+    .left .section-title{
+      margin: 18px 0 10px;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: .2px;
+      text-transform: uppercase;
+      color: #e6f0ff;
+      opacity: 0.95;
+    }
+
+    .btn-link {
+      display: block;
+      width: 90%;             /* ocupa 90% da coluna */
+      margin: 8px auto;       /* centralizado */
+      padding: 14px 16px;
+      text-align: left;
+      text-decoration: none;
+      color: var(--texto);
+      background-color: var(--azul-escuro);
+      border: 1.5px solid #ffffff;
+      border-radius: 6px;     /* radius = 6 */
+      font-weight: 600;
+      line-height: 1.25;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+      transition: transform .05s ease-in-out, background-color .15s ease, box-shadow .15s ease;
+      cursor: pointer;
+    }
+
+    .btn-link:hover, .btn-link:focus {
+      background-color: #0b2f60; /* azul um pouco mais claro ao hover */
+      outline: none;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+    }
+
+    .btn-link:active {
+      transform: scale(0.99);
+    }
+
+    .btn-link .emoji{
+      margin-right: 8px;
+      font-size: 1.05em;
+    }
+
+    /* Responsivo: empilhar abaixo de 900px */
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 16px;
+      }
+      .left, .middle, .right {
+        min-height: auto;
+      }
+      .btn-link {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <!-- Bloqueio de clique direito e Ctrl -->
+  <script>
+    function clickHandler(event) {
+      if (event.button === 2 || event.button === 3) {
+        document.oncontextmenu = function () { return false; };
+      }
+    }
+    document.onmousedown = clickHandler;
+    document.oncontextmenu = new Function("return false;");
+
+    function mensagem() {
+      alert('Conteúdo bloqueado!');
+      return false;
+    }
+
+    function bloquearCopia(Event) {
+      var e = Event ? Event : window.event;
+      var tecla = (e.keyCode) ? e.keyCode : e.which;
+      if (tecla === 17) {
+        mensagem();
+      }
+    }
+    document.onkeydown = bloquearCopia;
+  </script>
+</head>
+
+<body>
+  <!-- ====== CONTEÚDO EM 3 COLUNAS (SEM MENU SUPERIOR) ====== -->
+  <div class="container">
+    <!-- Coluna Esquerda (com todos os botões/links do menu original) -->
+    <div class="col left" aria-label="Acesso rápido">
+      <div class="section-title">Gestão de Contratos e Aquisições</div>
+
+      <a class="btn-link" href="https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_CONTRATOS_CONTIN_LIC/AllItems.aspx?viewid=c4d21093-b081-4132-9c98-95223afd3641" target="_self">
+        <span class="emoji">🔎</span> Contratos Continuados — Licitação
+      </a>
+
+      <a class="btn-link" href="https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_CT_CONT_DIRETA/AllItems.aspx?viewid=b6d67af4-f755-4bbc-80f9-39d6031094f3" target="_self">
+        <span class="emoji">🔎</span> Novas Contratações — Licitação ou Dispensa
+      </a>
+
+      <a class="btn-link" href="https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_CT_AQUISICOES/AllItems.aspx?viewid=7385a15c-baa9-43e0-ab8e-9e4f43b3239a" target="_self">
+        <span class="emoji">🔎</span> Aquisições — Compras e Contratações
+      </a>
+
+      <a class="btn-link" href="https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_ADITIVOS_C_CONT/AllItems.aspx?viewid=5c15f7e3-01b1-4268-82b1-67b1e4651d7e" target="_self">
+        <span class="emoji">🔎</span> Aditivos — Alterações Contratuais
+      </a>
+
+      <div class="section-title">Projetos</div>
+
+      <a class="btn-link" href="https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_PROJETOS_ANALISE/AllItems.aspx?viewid=05d2c4cb-bccb-4974-80dc-c4078d4d0835" target="_self">
+        <span class="emoji">🔎</span> Análise de Projetos
+      </a>
+
+      <a class="btn-link" href="https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_PROJETOS_UNIVERSALIZA/AllItems.aspx?viewid=70cb4209-bb88-471f-94c9-5224ce5b6352" target="_self">
+        <span class="emoji">🔎</span> Universalização
+      </a>
+
+      <div class="section-title">Remanejamento de Recursos</div>
+
+      <a class="btn-link" href="https://copasa.sharepoint.com/sites/painel-inteligente/Lists/Remanejamento%20Custeio/AllItems.aspx" target="_self">
+        <span class="emoji">🔎</span> Custeio
+      </a>
+
+      <a class="btn-link" href="https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_PROC_REMANEJAMENTO/AllItems.aspx" target="_self">
+        <span class="emoji">🔎</span> Investimento
+      </a>
+    </div>
+
+    <!-- Coluna do Meio (vazia para você preencher) -->
+    <div class="col middle" aria-label="Coluna do meio">
+      <!-- Deixe em branco: insira aqui seus elementos depois -->
+    </div>
+
+    <!-- Coluna da Direita (vazia para você preencher) -->
+    <div class="col right" aria-label="Coluna da direita">
+      <!-- Deixe em branco: insira aqui seus elementos depois -->
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+
+
+
+
+

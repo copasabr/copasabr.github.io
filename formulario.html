@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Formulário – Solicitação de Compra</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    #form-container {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 20px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        background: white;
+    }
+
+    .logo-area {
+        width: 150px;
+        height: 60px;
+        border: 1px dashed #999;
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-top: 15px;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 6px;
+        margin-top: 5px;
+        box-sizing: border-box;
+    }
+
+    textarea {
+        height: 60px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    table th, table td {
+        border: 1px solid #777;
+        padding: 5px;
+    }
+
+    table th {
+        background: #e8e8e8;
+    }
+
+    #btn {
+        margin-top: 20px;
+        padding: 12px 20px;
+        background: #0a5ec2;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    #btn:hover {
+        background: #064a96;
+    }
+</style>
+</head>
+
+<body>
+
+<h2>Solicitação de Compra de Materiais / Serviços</h2>
+
+<div id="form-container">
+
+    <!-- ESPAÇO PARA O LOGO -->
+    <div class="logo-area">
+        <small>Logotipo da Copasa aqui</small>
+    </div>
+
+    <label>Assunto:</label>
+    <input type="text" id="assunto">
+
+    <label>Itens (cole da planilha Excel com colunas: Quant | Código | Descrição):</label>
+    <textarea id="excelPaste" placeholder="Cole aqui os dados do Excel"></textarea>
+
+    <table id="itemsTable">
+        <thead>
+            <tr>
+                <th>Quant.</th>
+                <th>Código</th>
+                <th>Descrição do Material</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <label>Info / Histórico:</label>
+    <textarea id="info"></textarea>
+
+    <label>Análise:</label>
+    <textarea id="analise"></textarea>
+
+    <label>Local de Entrega:</label>
+    <input type="text" id="local">
+
+    <label>Fonte de recurso:</label>
+    <input type="text" id="fonte">
+
+    <label>Solicitante:</label>
+    <input type="text" id="solicitante">
+
+    <label>Aprovador:</label>
+    <input type="text" id="aprovador">
+
+</div>
+
+<button id="btn" onclick="gerarPDF()">Gerar PDF</button>
+
+<script>
+// --- Trata o "colar" do Excel para transformar em linhas da tabela ---
+document.getElementById("excelPaste").addEventListener("input", function() {
+    const texto = this.value.trim();
+    const linhas = texto.split(/\r?\n/);
+    const tbody = document.querySelector("#itemsTable tbody");
+    tbody.innerHTML = "";
+
+    linhas.forEach(linha => {
+        const colunas = linha.split(/\t/); // separa colunas do Excel
+
+        if (colunas.length >= 3) {
+            const tr = document.createElement("tr");
+
+            tr.innerHTML = `
+                <td>${colunas[0]}</td>
+                <td>${colunas[1]}</td>
+                <td>${colunas[2]}</td>
+            `;
+
+            tbody.appendChild(tr);
+        }
+    });
+});
+
+// --- Geração do PDF ---
+async function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const form = document.getElementById("form-container");
+
+    await html2canvas(form, { scale: 2 }).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = 210;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+    });
+
+    pdf.save("solicitacao_compra.pdf");
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Tabelas Responsivas - COPASA</title>
+<style>
+    body {
+        background-color: #000;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+
+    h4 {
+        background-color: darkblue;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+        margin-bottom: 40px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        table-layout: fixed; /* garante alinhamento uniforme */
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #555;
+        text-align: left;
+        word-wrap: break-word;
+    }
+
+    th {
+        background-color: #222;
+    }
+
+    /* Define larguras fixas para alinhamento entre tabelas */
+    .col-modulo       { width: 23%; }
+    .col-plataforma   { width: 23%; }
+    .col-aplicativo   { width: 23%; }
+    .col-ano          { width: 8%;  }
+    .col-link         { width: 23%; }
+
+    a {
+        color: #4DA3FF;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+
+
+<!-- Bloqueio de clique direito e Ctrl -->
+  <script>
+    function clickHandler(event) {
+      if (event.button === 2 || event.button === 3) {
+        document.oncontextmenu = function () { return false; };
+      }
+    }
+    document.onmousedown = clickHandler;
+    document.oncontextmenu = new Function("return false;");
+
+    function mensagem() {
+      alert('Conteúdo bloqueado!');
+      return false;
+    }
+
+    function bloquearCopia(Event) {
+      var e = Event ? Event : window.event;
+      var tecla = (e.keyCode) ? e.keyCode : e.which;
+      if (tecla === 17) {
+        mensagem();
+      }
+    }
+    document.onkeydown = bloquearCopia;
+  </script>
+  
+  
+</head>
+<body>
+
+<!-- ========================= TABELA 1 ========================= -->
+<center><h4>Controle de Processos</h4></center>
+<div class="table-container">
+<table>
+    <tr>
+        <th class="col-modulo">Módulo</th>
+        <th class="col-plataforma">Plataforma</th>
+        <th class="col-aplicativo">Aplicativo do Usuário</th>
+        <th class="col-ano">Ano</th>
+        <th class="col-link">Link</th>
+    </tr>
+    <tr>
+        <td>Painel DOP/SPPE</td>
+        <td>SharePoint</td>
+        <td>Site da DOP/SPPE</td>
+        <td>2025</td>
+        <td><a href="https://copasa.sharepoint.com/sites/sppe" target="_blank">Acessar</a></td>
+    </tr>
+    <tr>
+        <td>Painel Inteligente DOP</td>
+        <td>SharePoint / PowerAutomate / PowerApps</td>
+        <td>Painel de Serviços DOP</td>
+        <td>2026</td>
+        <td><a href="https://copasa.sharepoint.com/sites/painel-inteligente" target="_blank">Acessar</a></td>
+    </tr>
+    <tr>
+        <td>Controle de Processos (GNPO)</td>
+        <td>SharePoint / PowerAutomate / PowerApps</td>
+        <td>Painel GNPO</td>
+        <td>2026</td>
+        <td>Acesso Restrito</td>
+    </tr>
+</table>
+</div>
+
+<!-- ========================= TABELA 2 ========================= -->
+<center><h4>Otimização de Rotas e Serviços</h4></center>
+<div class="table-container">
+<table>
+    <tr>
+        <th class="col-modulo">Módulo</th>
+        <th class="col-plataforma">Plataforma</th>
+        <th class="col-aplicativo">Aplicativo do Usuário</th>
+        <th class="col-ano">Ano</th>
+        <th class="col-link">Link</th>
+    </tr>
+    <tr>
+        <td>Aplicativo de Rotas</td>
+        <td>Power Apps + SharePoint</td>
+        <td>Rotas CSMG APP</td>
+        <td>2022</td>
+        <td><a href="https://copasa.sharepoint.com/:u:/s/csmg-ete/IQDuKbNoZx9ESpVP5rIdynOLAbTeHpUZQYajqvDXkKbnlRA?e=EKRwln" target="_blank">Acessar</a></td>
+    </tr>
+</table>
+</div>
+
+<!-- ========================= TABELA 3 ========================= -->
+<center><h4>Planejamento e Controle da Manutenção</h4></center>
+<div class="table-container">
+<table>
+    <tr>
+        <th class="col-modulo">Módulo</th>
+        <th class="col-plataforma">Plataforma</th>
+        <th class="col-aplicativo">Aplicativo do Usuário</th>
+        <th class="col-ano">Ano</th>
+        <th class="col-link">Link</th>
+    </tr>
+    <tr>
+        <td>DataBook Digital</td>
+        <td>SharePoint</td>
+        <td>Eletromecânica APP</td>
+        <td>2021</td>
+        <td><a href="https://copasa.sharepoint.com/sites/ferramentaria" target="_blank">Acessar</a></td>
+    </tr>
+    <tr>
+        <td>Biblioteca de Manuais de Equipamentos</td>
+        <td>SharePoint</td>
+        <td>Eletromecânica APP</td>
+        <td>2021</td>
+        <td><a href="https://copasa.sharepoint.com/sites/ferramentaria" target="_blank">Acessar</a></td>
+    </tr>
+    <tr>
+        <td>Calendário automatizado de Serviços</td>
+        <td>SharePoint</td>
+        <td>Eletromecânica APP</td>
+        <td>2021</td>
+        <td>Acesso Restrito</td>
+    </tr>
+    <tr>
+        <td>Controle de ferramentaria via QR-code</td>
+        <td>SharePoint</td>
+        <td>Eletromecânica APP</td>
+        <td>2021</td>
+        <td>Acesso Restrito</td>
+    </tr>
+    <tr>
+        <td>Controle de bens patrimoniados</td>
+        <td>SharePoint</td>
+        <td>Eletromecânica APP</td>
+        <td>2021</td>
+        <td>Acesso Restrito</td>
+    </tr>
+    <tr>
+        <td>Otimização de Rotas</td>
+        <td>SharePoint</td>
+        <td>Eletromecânica APP</td>
+        <td>2021</td>
+        <td>Acesso Restrito</td>
+    </tr>
+    <tr>
+        <td>Controle de Ocorrências</td>
+        <td>SharePoint + Power BI + SAP</td>
+        <td>Eletromecânica APP</td>
+        <td>2021</td>
+        <td><a href="https://copasa.sharepoint.com/sites/ferramentaria" target="_blank">Acessar</a></td>
+    </tr>
+    <tr>
+        <td>Inteligência Operacional</td>
+        <td>SharePoint + Power BI + SAP</td>
+        <td>Painel Operacional</td>
+        <td>2023</td>
+        <td><a href="https://copasa.sharepoint.com/sites/csmg-ete/SitePages/painel-de-controle.aspx" target="_blank">Acessar</a></td>
+    </tr>
+</table>
+</div>
+
+<!-- ========================= TABELA 4 ========================= -->
+<center><h4>Monitoramento de Serviços</h4></center>
+<div class="table-container">
+<table>
+    <tr>
+        <th class="col-modulo">Módulo</th>
+        <th class="col-plataforma">Plataforma</th>
+        <th class="col-aplicativo">Aplicativo do Usuário</th>
+        <th class="col-ano">Ano</th>
+        <th class="col-link">Link</th>
+    </tr>
+    <tr>
+        <td>Monitoramento de Serviços em Tempo Real</td>
+        <td>SharePoint + Teams</td>
+        <td>Monitoramento de Serviços</td>
+        <td>2022</td>
+        <td><a href="https://copasa.sharepoint.com/sites/servicosentregues/SitePages/index.aspx" target="_blank">Acessar</a></td>
+    </tr>
+</table>
+</div>
+
+</body>
+</html>

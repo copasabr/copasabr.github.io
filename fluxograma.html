@@ -4,6 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>fluxograma</title>
+
+  <!-- Bloqueio de clique direito e Ctrl -->
+  <script>
+    function clickHandler(event) {
+      if (event.button === 2 || event.button === 3) {
+        document.oncontextmenu = function () { return false; };
+      }
+    }
+    document.onmousedown = clickHandler;
+    document.oncontextmenu = new Function("return false;");
+
+    function mensagem() {
+      alert('Conteúdo bloqueado!');
+      return false;
+    }
+
+    function bloquearCopia(Event) {
+      var e = Event ? Event : window.event;
+      var tecla = (e.keyCode) ? e.keyCode : e.which;
+      if (tecla === 17) {
+        mensagem();
+      }
+    }
+    document.onkeydown = bloquearCopia;
+  </script>
+  
   </head>
 <body>
 <center><img border="0" src="fluxo.png" width="1712" height="590"></center>

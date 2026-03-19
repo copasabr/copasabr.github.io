@@ -47,6 +47,8 @@
     .col-aplicativo   { width: 23%; }
     .col-ano          { width: 8%;  }
     .col-link         { width: 23%; }
+	.col-direita      { width: 50%; }
+	.col-esquerda     { width: 50%; }
 
     a {
         color: #4DA3FF;
@@ -234,6 +236,269 @@
         <td><a href="https://copasa.sharepoint.com/sites/servicosentregues/SitePages/index.aspx" target="_blank">Acessar</a></td>
     </tr>
 </table>
+</div>
+<!-- ========================= TABELA 5 ========================= -->
+<center><h4>Dados Técnicos do Sistema</h4></center>
+<div class="table-container">
+
+<table>
+    <tr>
+        <td class="col-esquerda">Metodologia utilizada</td>
+        <td class="col-direita">
+            Documentação e Referências Bibliográficas
+        </td>
+    </tr>
+
+    <tr>
+        <td class="col-esquerda">
+		
+		Ambiente SAP e Automação Robótica de Processos (RPA).<br>
+        Automação robótica para inserção/extração de dados no SAP.<br>
+        Monitoramento de processos com Business Intelligence integrado ao SAP.<br>
+        Envio automático de dados da Plataforma SharePoint para a plataforma SAP.<br>
+        Envio automático e em massa de dados de outros aplicativos para a plataforma SAP.<br>
+        Inteligência Artificial (IA) e RPA no Ambiente SAP.
+		
+		
+		</td>
+        <td class="col-direita">
+            <div align="center">
+<div style="margin-top: 0; margin-bottom: 0">
+<p style="margin-top: 0; margin-bottom: 0"><font color="lime" size="4">
+<i>SAP Hana com IA e Automação Robótica</i></font></p></div>
+<br />
+<div id="recentPostsSAP"></div>
+<script>
+  // Configurações
+  const BLOG_URL_SAP = "https://ivecbr.blogspot.com";
+  const LABEL_SAP = "SAP";
+  const MAX_RESULTS_SAP = 6;
+  const ID_CONTAINER_SAP = 'recentPostsSAP';
+  
+  // URL da API/Feed do Blogger
+  const API_URL_SAP = `${BLOG_URL_SAP}/feeds/posts/summary?alt=json-in-script&callback=showrecentPostsSAP&max-results=${MAX_RESULTS_SAP}&orderby=published&start-index=1&category=${LABEL_SAP}`;
+
+  // Função de callback para "SAP"
+  function showrecentPostsSAP(json) {
+    const container = document.getElementById(ID_CONTAINER_SAP);
+    container.innerHTML = '';
+    
+    if (!json || !json.feed || !json.feed.entry || json.feed.entry.length === 0) {
+      container.innerHTML = `<p>Nenhuma postagem encontrada com o marcador "${LABEL_SAP}".</p>`;
+      return;
+    }
+
+    const posts = json.feed.entry;
+    let html = '<ul class="post-list-com-thumb">';
+
+    posts.forEach(post => {
+      const title = post.title.$t;
+      let postUrl = '';
+      let thumbnailUrl = '';
+
+      for (let i = 0; i < post.link.length; i++) {
+        if (post.link[i].rel === 'alternate') {
+          postUrl = post.link[i].href;
+          break;
+        }
+      }
+
+      if (post.media$thumbnail && post.media$thumbnail.url) {
+        thumbnailUrl = post.media$thumbnail.url.replace(/s\d+(\-c)?\//, 's70-c/');
+      }
+      
+      if (postUrl) {
+        html += `
+          <li>
+            <a href="${postUrl}" title="${title}" target="_blank">
+              ${thumbnailUrl ? `<img src="${thumbnailUrl}" alt="${title}" class="post-thumbnail"/>` : ''}
+              <span class="post-title-text">${title}</span>
+            </a>
+          </li>
+        `;
+      }
+    });
+
+    html += '</ul>';
+    container.innerHTML = html;
+  }
+
+  // Cria o elemento <script> para fazer a chamada JSONP
+  const scriptSAP = document.createElement('script');
+  scriptSAP.src = API_URL_SAP;
+  document.head.appendChild(scriptSAP);
+</script>
+
+<style>
+  /* Estilos específicos para o gadget SAP */
+  #recentPostsSAP {
+    padding-left: 10px; 
+    padding-right: 10px;
+    font-size: 14px; 
+  }
+
+  #recentPostsSAP .post-list-com-thumb {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #recentPostsSAP .post-list-com-thumb li {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+  }
+  
+  #recentPostsSAP .post-list-com-thumb a {
+    display: flex; 
+    align-items: center; 
+    text-decoration: none; 
+    color: #ffffff !important; 
+  }
+
+  #recentPostsSAP .post-thumbnail {
+    width: 70px; 
+    height: 70px; 
+    object-fit: cover; 
+    margin-right: 10px; 
+    border-radius: 4px;
+  }
+
+  #recentPostsSAP .post-title-text {
+    flex-grow: 1; 
+  }
+
+  #recentPostsSAP .post-list-com-thumb a:hover {
+    color: #4169E1 !important; 
+  }
+  
+  #recentPostsSAP .post-list-com-thumb a:hover .post-title-text {
+    text-decoration: underline;
+  }
+</style></div>   
+		   
+		   
+<div align="center">
+<div style="margin-top: 0; margin-bottom: 0"><font color="lime" size="4">
+<i>Integração de Agentes de IA e Automação Robótica</i></font></div>
+<br />
+
+<div id="recentPostsCSMG"></div>
+<script>
+  // Configurações
+  const BLOG_URL_CSMG = "https://ivecbr.blogspot.com";
+  const LABEL_CSMG = "CSMG";
+  const MAX_RESULTS_CSMG = 6;
+  const ID_CONTAINER_CSMG = 'recentPostsCSMG';
+  
+  // URL da API/Feed do Blogger
+  const API_URL_CSMG = `${BLOG_URL_CSMG}/feeds/posts/summary?alt=json-in-script&callback=showrecentPostsCSMG&max-results=${MAX_RESULTS_CSMG}&orderby=published&start-index=1&category=${LABEL_CSMG}`;
+
+  // 1. Função de callback única para "cristianismo"
+  function showrecentPostsCSMG(json) {
+    const container = document.getElementById(ID_CONTAINER_CSMG);
+    container.innerHTML = '';
+    
+    if (!json || !json.feed || !json.feed.entry || json.feed.entry.length === 0) {
+      container.innerHTML = `<p>Nenhuma postagem encontrada com o marcador "${LABEL_CSMG}".</p>`;
+      return;
+    }
+
+    const posts = json.feed.entry;
+    let html = '<ul class="post-list-com-thumb">';
+
+    posts.forEach(post => {
+      const title = post.title.$t;
+      let postUrl = '';
+      let thumbnailUrl = '';
+
+      for (let i = 0; i < post.link.length; i++) {
+        if (post.link[i].rel === 'alternate') {
+          postUrl = post.link[i].href;
+          break;
+        }
+      }
+
+      if (post.media$thumbnail && post.media$thumbnail.url) {
+        thumbnailUrl = post.media$thumbnail.url.replace(/s\d+(\-c)?\//, 's70-c/');
+      }
+      
+      if (postUrl) {
+        html += `
+          <li>
+            <a href="${postUrl}" title="${title}" target="_blank">
+              ${thumbnailUrl ? `<img src="${thumbnailUrl}" alt="${title}" class="post-thumbnail"/>` : ''}
+              <span class="post-title-text">${title}</span>
+            </a>
+          </li>
+        `;
+      }
+    });
+
+    html += '</ul>';
+    container.innerHTML = html;
+  }
+
+  // 3. Cria o elemento <script> para fazer a chamada JSONP
+  const scriptCSMG = document.createElement('script');
+  scriptCSMG.src = API_URL_CSMG;
+  document.head.appendChild(scriptCSMG);
+</script>
+
+<style>
+  /* Estilos específicos para o gadget CSMG */
+  #recentPostsCSMG {
+    padding-left: 10px; 
+    padding-right: 10px;
+    font-size: 14px; 
+  }
+
+  #recentPostsCSMG .post-list-com-thumb {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #recentPostsCSMG .post-list-com-thumb li {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+  }
+  
+  #recentPostsCSMG .post-list-com-thumb a {
+    display: flex; 
+    align-items: center; 
+    text-decoration: none; 
+    /* COR BRANCA APLICADA */
+    color: #FFFFFF !important; 
+  }
+
+  #recentPostsCSMG .post-thumbnail {
+    width: 70px; 
+    height: 70px; 
+    object-fit: cover; 
+    margin-right: 10px; 
+    border-radius: 4px;
+  }
+
+  #recentPostsCSMG .post-title-text {
+    flex-grow: 1; 
+  }
+
+  #recentPostsCSMG .post-list-com-thumb a:hover {
+    color: #4169E1 !important; 
+  }
+  
+  #recentPostsCSMG .post-list-com-thumb a:hover .post-title-text {
+    text-decoration: underline;
+  }
+</style></div>	
+        </td>
+    </tr>
+
+    
+</table>
+
+
+
 </div>
 
 </body>

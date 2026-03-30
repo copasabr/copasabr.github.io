@@ -13,7 +13,7 @@
     }
     body {
       margin: 0;
-      background-image: url('fundo-azul.jpg');
+      background-image: url('fundo2.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -41,6 +41,33 @@
       font-size: clamp(1rem, 2.2vw, 1.125rem);
     }
   </style>
+
+<!-- Bloqueio de clique direito e Ctrl -->
+  <script>
+    function clickHandler(event) {
+      if (event.button === 2 || event.button === 3) {
+        document.oncontextmenu = function () { return false; };
+      }
+    }
+    document.onmousedown = clickHandler;
+    document.oncontextmenu = new Function("return false;");
+
+    function mensagem() {
+      alert('Conteúdo bloqueado!');
+      return false;
+    }
+
+    function bloquearCopia(Event) {
+      var e = Event ? Event : window.event;
+      var tecla = (e.keyCode) ? e.keyCode : e.which;
+      if (tecla === 17) {
+        mensagem();
+      }
+    }
+    document.onkeydown = bloquearCopia;
+  </script>
+
+  
 </head>
 <body>
   <div class="aviso-ivec" role="alert" aria-live="polite">

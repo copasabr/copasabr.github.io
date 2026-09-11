@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conversor para Parágrafos HTML</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 20px;
+    }
+
+    h2 {
+        color: #333;
+    }
+
+    textarea {
+        width: 100%;
+        min-height: 200px;
+        padding: 10px;
+        margin-top: 10px;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+
+    button {
+        padding: 10px 20px;
+        margin-right: 10px;
+        cursor: pointer;
+        background-color: #0078d4;
+        color: white;
+        border: none;
+        border-radius: 4px;
+    }
+
+    button:hover {
+        background-color: #005ea6;
+    }
+
+    label {
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    function clickHandler(event) {
+      if (event.button === 2 || event.button === 3) {
+        document.oncontextmenu = function () { return false; };
+      }
+    }
+    document.onmousedown = clickHandler;
+    document.oncontextmenu = new Function("return false;");
+
+    function mensagem() {
+      alert('Conteúdo bloqueado!');
+      return false;
+    }
+
+    function bloquearCopia(Event) {
+      var e = Event ? Event : window.event;
+      var tecla = (e.keyCode) ? e.keyCode : e.which;
+      if (tecla === 17) {
+        mensagem();
+      }
+    }
+    document.onkeydown = bloquearCopia;
+  </script>
+
+</head>
+<body>
+
+<center><h2>Conversor de Texto para Parágrafos HTML</h2></center>
+
+<label for="textoOriginal">Texto Original:</label>
+<textarea id="textoOriginal" placeholder="Digite um parágrafo por linha..."></textarea>
+
+<button onclick="converterTexto()">Converter</button>
+
+<br><br>
+
+<label for="textoFormatado">Texto Formatado:</label>
+<textarea id="textoFormatado" readonly></textarea>
+
+<button onclick="copiarTexto()">Copiar Texto Formatado</button>
+
+<script>
+function converterTexto() {
+    const texto = document.getElementById('textoOriginal').value;
+
+    const linhas = texto
+        .split('\n')
+        .map(linha => linha.trim())
+        .filter(linha => linha !== '');
+
+    const resultado = linhas
+        .map(linha => `<p>${linha}</p>`)
+        .join('\n');
+
+    document.getElementById('textoFormatado').value = resultado;
+}
+
+function copiarTexto() {
+    const campo = document.getElementById('textoFormatado');
+
+    campo.select();
+    campo.setSelectionRange(0, 99999);
+
+    navigator.clipboard.writeText(campo.value)
+        .then(() => {
+            alert('Texto formatado copiado com sucesso!');
+        })
+        .catch(() => {
+            alert('Não foi possível copiar o texto.');
+        });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análise de Dados - Setor Técnico GNPO | Fluxo Humano</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome 6 Free CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            human: {
+              DEFAULT: '#0284c7',
+              light: '#38bdf8',
+              cyan: '#22d3ee',
+              dark: '#0369a1',
+              surface: 'rgba(2, 132, 199, 0.12)',
+              border: 'rgba(56, 189, 248, 0.35)',
+            },
+            space: {
+              base: '#090d16',
+              card: '#161b22',
+              glass: 'rgba(22, 27, 34, 0.72)',
+              border: 'rgba(255, 255, 255, 0.08)'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at 18% 25%, rgba(14, 165, 233, 0.12) 0%, transparent 45%),
+                  radial-gradient(circle at 82% 70%, rgba(6, 182, 212, 0.09) 0%, transparent 45%),
+                  #090d16;
+      background-attachment: fixed;
+    }
+
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: rgba(22, 27, 34, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .pulse-glow {
+      animation: pulseGlow 2.8s infinite alternate ease-in-out;
+    }
+    @keyframes pulseGlow {
+      0% { opacity: 0.75; filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.4)); }
+      100% { opacity: 1; filter: drop-shadow(0 0 16px rgba(34, 211, 238, 0.85)); }
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      height: 7px;
+      width: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.35);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(56, 189, 248, 0.65);
+    }
+  </style>
+  
+  <script>
+    function clickHandler(event) {
+      if (event.button === 2 || event.button === 3) {
+        document.oncontextmenu = function () { return false; };
+      }
+    }
+    document.onmousedown = clickHandler;
+    document.oncontextmenu = new Function("return false;");
+
+    function mensagem() {
+      alert('Conteúdo bloqueado!');
+      return false;
+    }
+
+    function bloquearCopia(Event) {
+      var e = Event ? Event : window.event;
+      var tecla = (e.keyCode) ? e.keyCode : e.which;
+      if (tecla === 17) {
+        mensagem();
+      }
+    }
+    document.onkeydown = bloquearCopia;
+  </script>
+  
+  
+  
+</head>
+
+<body class="text-slate-200 min-h-screen flex flex-col font-sans antialiased selection:bg-sky-500 selection:text-white">
+
+  <header class="sticky top-0 z-40 border-b border-slate-800/90 glass-panel">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & Phase Information -->
+      <div class="flex items-center space-x-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-600 via-cyan-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/25 ring-1 ring-white/20">
+          <i class="fa-solid fa-user-gear text-white text-lg pulse-glow"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-400/30 font-semibold tracking-wide">
+              FASE HUMANA ESPECIALIZADA
+            </span>
+            <span class="text-xs text-slate-400">• Etapa Final</span>
+          </div>
+          <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
+            Análise de Dados
+            <span class="text-sky-400 font-semibold text-base sm:text-lg">Setor Técnico GNPO</span>
+          </h1>
+          <p class="text-xs text-slate-400">Atividades analíticas, legais, decisórias e de governança corporativa no âmbito DOP & Copasa</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Controls & Filters -->
+      <div class="flex items-center flex-wrap gap-2.5">
+        <!-- View Switcher -->
+        <div class="bg-slate-900/90 p-1 rounded-xl border border-slate-700/60 flex items-center shadow-inner">
+          <button id="viewGridBtn" onclick="switchView('grid')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-gradient-to-r from-sky-600 to-cyan-500 text-white shadow-md">
+            <i class="fa-solid fa-table-cells-large text-xs"></i>
+            <span>Matriz / Grupos</span>
+          </button>
+          <button id="viewListBtn" onclick="switchView('list')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all duration-200">
+            <i class="fa-solid fa-list-check text-xs"></i>
+            <span>Lista de Ações</span>
+          </button>
+        </div>
+
+        <!-- Reset Button -->
+        <button onclick="resetChecklist()" title="Redefinir checklist" class="px-2.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-sky-300 text-xs border border-slate-700 flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-rotate-right text-xs"></i>
+          <span class="hidden sm:inline">Reiniciar</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+    <!-- KPI / Top Summary Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+      <div class="glass-card rounded-2xl p-4 border-l-4 border-l-sky-500 relative overflow-hidden group">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-2xl font-extrabold text-white font-mono" id="statTotalTasks">10</div>
+            <div class="text-xs text-sky-400 font-medium mt-0.5">Atribuições GNPO</div>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-400 group-hover:scale-110 transition">
+            <i class="fa-solid fa-clipboard-list text-lg"></i>
+          </div>
+        </div>
+        <div class="mt-2 text-[11px] text-slate-400">9 Atividades centrais + Demandas DOP</div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-4 border-l-4 border-l-cyan-400 relative overflow-hidden group">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-2xl font-extrabold text-white font-mono" id="statCompleted">0</div>
+            <div class="text-xs text-cyan-400 font-medium mt-0.5">Ações Concluídas</div>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition">
+            <i class="fa-solid fa-circle-check text-lg"></i>
+          </div>
+        </div>
+        <div class="mt-2 w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+          <div id="progressBar" class="bg-gradient-to-r from-sky-500 to-cyan-400 h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-4 border-l-4 border-l-blue-500 relative overflow-hidden group">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-2xl font-extrabold text-white font-mono">4 Eixos</div>
+            <div class="text-xs text-blue-400 font-medium mt-0.5">Dimensões de Atuação</div>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition">
+            <i class="fa-solid fa-network-wired text-lg"></i>
+          </div>
+        </div>
+        <div class="mt-2 text-[11px] text-slate-400">Técnico, Governança, Financeiro & BI</div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-4 border-l-4 border-l-teal-400 relative overflow-hidden group">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-2xl font-extrabold text-white font-mono">100%</div>
+            <div class="text-xs text-teal-400 font-medium mt-0.5">Ação Humana</div>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-400 group-hover:scale-110 transition">
+            <i class="fa-solid fa-user-check text-lg"></i>
+          </div>
+        </div>
+        <div class="mt-2 text-[11px] text-slate-400">Decisão & Julgamento Crítico</div>
+      </div>
+    </div>
+
+    <!-- Filter and Search Bar -->
+    <div class="glass-panel p-3 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-3">
+      <!-- Search input -->
+      <div class="relative w-full md:w-80">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <input 
+          type="text" 
+          id="searchInput" 
+          oninput="handleSearch(this.value)" 
+          placeholder="Filtrar ação por palavra-chave..." 
+          class="w-full bg-slate-900/90 text-xs text-slate-200 placeholder-slate-500 rounded-xl pl-9 pr-4 py-2 border border-slate-700/80 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition"
+        >
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="flex items-center gap-1.5 flex-wrap w-full md:w-auto justify-start md:justify-end" id="categoryFilters">
+        <button onclick="setCategoryFilter('all')" id="filter-pill-all" class="category-pill active text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-500 text-white transition">Todos (10)</button>
+        <button onclick="setCategoryFilter('tecnico')" id="filter-pill-tecnico" class="category-pill text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-400 hover:text-sky-300 bg-slate-900/80 border border-slate-800 transition">Técnico & Legal</button>
+        <button onclick="setCategoryFilter('governanca')" id="filter-pill-governanca" class="category-pill text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-400 hover:text-sky-300 bg-slate-900/80 border border-slate-800 transition">Governança & Atendimento</button>
+        <button onclick="setCategoryFilter('financeiro')" id="filter-pill-financeiro" class="category-pill text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-400 hover:text-sky-300 bg-slate-900/80 border border-slate-800 transition">Financeiro & Orçamento</button>
+        <button onclick="setCategoryFilter('bi')" id="filter-pill-bi" class="category-pill text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-400 hover:text-sky-300 bg-slate-900/80 border border-slate-800 transition">BI & Contratos</button>
+      </div>
+    </div>
+
+    <div id="gridView" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Injected by JavaScript -->
+    </div>
+
+    <div id="listView" class="hidden flex-col gap-3">
+      <!-- Injected by JavaScript -->
+    </div>
+
+    <!-- Notice Card explaining DOP / Copasa integration -->
+    <div class="glass-card rounded-2xl p-4 border border-sky-500/20 bg-gradient-to-r from-sky-950/40 to-slate-900/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-sky-400 shrink-0">
+          <i class="fa-solid fa-circle-info text-base"></i>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider">Papel Estratégico do Setor Técnico GNPO</h4>
+          <p class="text-xs text-slate-400 mt-0.5">Todas as ações desta coluna dependem da análise crítica, validação laudal, conhecimento da legislação vigente e tomada de decisão humana corporativa.</p>
+        </div>
+      </div>
+      <span class="text-xs font-mono text-sky-300 bg-sky-950 px-3 py-1.5 rounded-xl border border-sky-800/80 shrink-0">
+        Copasa • DOP / GNPO
+      </span>
+    </div>
+
+  </main>
+
+  <div id="detailModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="glass-panel w-full max-w-xl rounded-3xl p-6 border border-sky-500/30 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Close Button -->
+      <button onclick="closeModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition border border-slate-700">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+
+      <!-- Modal Content Area -->
+      <div id="modalBody">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <footer class="border-t border-slate-800/80 py-4 glass-panel mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+      <div class="flex items-center gap-2 text-sky-400 font-semibold">
+        <i class="fa-solid fa-user-shield"></i>
+        <span>Análise de Dados - Setor Técnico GNPO • 100% Ação Humana</span>
+      </div>
+      <div class="font-mono text-[11px] text-slate-500">Fluxo Operacional • Copasa DOP</div>
+    </div>
+  </footer>
+
+  <script>
+    // Detailed list of all 9 tasks + additional demand from table
+    const gnpoActions = [
+      {
+        id: 1,
+        title: "Leitura e Análise Técnica",
+        rawText: "Leitura e análise de projetos, processos, documentações e laudos técnicos.",
+        category: "tecnico",
+        categoryName: "Técnico & Legal",
+        icon: "fa-book-open-reader",
+        badge: "Análise Documental",
+        complexity: "Alta",
+        responsibles: "Engenheiros / Analistas Técnicos GNPO",
+        deliverable: "Pareceres técnicos validados, relatórios de conformidade e despachos de aprovação.",
+        guidelines: "Exame minucioso da documentação comprobatória, adequação a projetos de engenharia sanitária e validação de memoriais descritivos."
+      },
+      {
+        id: 2,
+        title: "Aplicação da Legislação Vigente",
+        rawText: "Aplicação da lei vigente e conhecimento técnico específico.",
+        category: "tecnico",
+        categoryName: "Técnico & Legal",
+        icon: "fa-scale-balanced",
+        badge: "Conformidade Legal",
+        complexity: "Alta",
+        responsibles: "Corpo Técnico Especializado GNPO",
+        deliverable: "Enquadramento normativo, garantias de aderência às resoluções das agências reguladoras (ex: ARSAE).",
+        guidelines: "Garantir estrita observância das normas regulatórias do setor de saneamento, leis de contratações públicas e diretrizes estaduais."
+      },
+      {
+        id: 3,
+        title: "Regras e Governança Corporativa",
+        rawText: "Aplicação das regras corporativas no escopo dos processos.",
+        category: "governanca",
+        categoryName: "Governança & Atendimento",
+        icon: "fa-shield-halved",
+        badge: "Compliance",
+        complexity: "Média",
+        responsibles: "Gestão e Equipe Técnica GNPO",
+        deliverable: "Processos homologados segundo o Manual de Governança e Compliance da Copasa.",
+        guidelines: "Alinhamento com as políticas internas de integridade, limites de competência decisória e fluxos formais de tramitação."
+      },
+      {
+        id: 4,
+        title: "Suporte e Atendimento ao Cliente DOP",
+        rawText: "Suporte e atendimento ao cliente no âmbito da DOP.",
+        category: "governanca",
+        categoryName: "Governança & Atendimento",
+        icon: "fa-headset",
+        badge: "Relacionamento DOP",
+        complexity: "Média",
+        responsibles: "Analistas de Atendimento Técnico",
+        deliverable: "Resoluções técnicas formais a dúvidas de solicitantes internos e clientes de ponta.",
+        guidelines: "Interlocução direta com os demandantes dos setores DOP através do Painel de Serviços e canais oficiais corporativos."
+      },
+      {
+        id: 5,
+        title: "Apontamento de Soluções Técnicas",
+        rawText: "Apontamento de soluções técnicas e corporativas.",
+        category: "tecnico",
+        categoryName: "Técnico & Legal",
+        icon: "fa-lightbulb",
+        badge: "Solução de Problemas",
+        complexity: "Alta",
+        responsibles: "Especialistas e Consultores Internos",
+        deliverable: "Planos de intervenção técnica, ajustes operacionais e alternativas de viabilidade técnica.",
+        guidelines: "Diagnóstico de falhas operacionais e proposição fundamentada de soluções com base em dados de campo e simulações."
+      },
+      {
+        id: 6,
+        title: "Efetivação de Compras e Transações",
+        rawText: "Efetivação de compras, projetos e transações de recursos financeiros.",
+        category: "financeiro",
+        categoryName: "Financeiro & Orçamento",
+        icon: "fa-money-bill-transfer",
+        badge: "Gestão Financeira",
+        complexity: "Alta",
+        responsibles: "Setor Técnico GNPO & Área de Suprimentos",
+        deliverable: "Pedidos de compra emitidos, medições atestadas e liberações financeiras devidamente registradas.",
+        guidelines: "Execução orçamentária dos investimentos programados, acompanhamento de contratos de fornecimento e liberação de pagamentos."
+      },
+      {
+        id: 7,
+        title: "Relatórios de Business Intelligence (BI)",
+        rawText: "Emissão de Relatórios de business intelligence.",
+        category: "bi",
+        categoryName: "BI & Contratos",
+        icon: "fa-chart-pie",
+        badge: "Data Intelligence",
+        complexity: "Média",
+        responsibles: "Analistas de BI & Dados GNPO",
+        deliverable: "Dashboards atualizados, relatórios executivos de KPIs e análise preditiva de demandas.",
+        guidelines: "Utilização das bases tabuladas nas etapas automatizadas noturnas para gerar insights táticos à diretoria."
+      },
+      {
+        id: 8,
+        title: "Notas Técnicas e Aditivos Contratuais",
+        rawText: "Emissão e validação de Notas Técnicas, Aditivos Contratuais e outros.",
+        category: "bi",
+        categoryName: "BI & Contratos",
+        icon: "fa-file-signature",
+        badge: "Gestão de Contratos",
+        complexity: "Alta",
+        responsibles: "Gestores Técnicos de Contratos GNPO",
+        deliverable: "Notas técnicas justificativas, termos aditivos minutados e convalidações formais.",
+        guidelines: "Apoio à fiscalização contratual, elaboração de aditamentos de prazo e valor sob estrita fundamentação técnica e legal."
+      },
+      {
+        id: 9,
+        title: "Planejamento e Orçamento Corporativo",
+        rawText: "Processos pertinentes ao Planejamento e Orçamento corporativo.",
+        category: "financeiro",
+        categoryName: "Financeiro & Orçamento",
+        icon: "fa-calculator",
+        badge: "Planejamento / CAPEX / OPEX",
+        complexity: "Alta",
+        responsibles: "Coordenação GNPO & Planejamento Financeiro",
+        deliverable: "Planilhas orçamentárias plurianuais, previsões de desembolso e controle de rubricas.",
+        guidelines: "Equalização do cronograma físico-financeiro das demandas operacionais com o orçamento alocado pela empresa."
+      },
+      {
+        id: 10,
+        title: "Outras Demandas Institucionais",
+        rawText: "Outras demandas atribuídas no âmbito da DOP e da Copasa.",
+        category: "governanca",
+        categoryName: "Governança & Atendimento",
+        icon: "fa-diagram-project",
+        badge: "Demandas Especiais",
+        complexity: "Variável",
+        responsibles: "Equipe Multidisciplinar GNPO",
+        deliverable: "Atendimentos sob demanda a auditorias, órgãos de controle e diretrizes estratégicas emergenciais.",
+        guidelines: "Atuação ágil e resiliente em projetos especiais e demandas designadas pela alta liderança da DOP e Copasa."
+      }
+    ];
+
+    // Local state variables
+    let currentView = 'grid'; // 'grid' or 'list'
+    let currentCategory = 'all';
+    let searchQuery = '';
+    let completedTasks = new Set();
+
+    // Load saved checklist state from localStorage
+    function loadSavedState() {
+      try {
+        const saved = localStorage.getItem('gnpo_completed_tasks');
+        if (saved) {
+          completedTasks = new Set(JSON.parse(saved));
+        }
+      } catch (e) {
+        console.error("Storage error:", e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem('gnpo_completed_tasks', JSON.stringify([...completedTasks]));
+      } catch (e) {
+        console.error("Storage error:", e);
+      }
+    }
+
+    function getFilteredActions() {
+      return gnpoActions.filter(action => {
+        const matchesCategory = (currentCategory === 'all') || (action.category === currentCategory);
+        const matchesSearch = searchQuery === '' || 
+          action.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          action.rawText.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          action.badge.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesSearch;
+      });
+    }
+
+    function updateMetrics() {
+      const total = gnpoActions.length;
+      const completed = completedTasks.size;
+      const percent = Math.round((completed / total) * 100);
+
+      document.getElementById('statTotalTasks').innerText = total;
+      document.getElementById('statCompleted').innerText = `${completed} / ${total}`;
+      document.getElementById('progressBar').style.width = `${percent}%`;
+    }
+
+    // Toggle checklist item
+    function toggleComplete(id, event) {
+      if (event) event.stopPropagation();
+      if (completedTasks.has(id)) {
+        completedTasks.delete(id);
+      } else {
+        completedTasks.add(id);
+      }
+      saveState();
+      updateMetrics();
+      renderCurrentView();
+    }
+
+    function resetChecklist() {
+      completedTasks.clear();
+      saveState();
+      updateMetrics();
+      renderCurrentView();
+    }
+
+    function renderGridView() {
+      const container = document.getElementById('gridView');
+      container.innerHTML = '';
+      const filtered = getFilteredActions();
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-500">
+            <i class="fa-solid fa-filter-circle-xmark text-4xl mb-3 text-slate-600"></i>
+            <p class="text-sm">Nenhuma atividade localizada com os filtros selecionados.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(action => {
+        const isDone = completedTasks.has(action.id);
+        const card = document.createElement('div');
+        card.className = `glass-card rounded-2xl p-5 border transition-all duration-300 relative flex flex-col justify-between group cursor-pointer ${
+          isDone 
+            ? 'border-emerald-500/50 bg-emerald-950/20' 
+            : 'border-slate-800 hover:border-sky-400/60 hover:bg-slate-900/80 shadow-lg hover:shadow-sky-500/10'
+        }`;
+        
+        card.onclick = () => openModal(action.id);
+
+        card.innerHTML = `
+          <div>
+            <!-- Top Card Header -->
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="w-8 h-8 rounded-xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center text-sky-400 group-hover:scale-105 transition">
+                <i class="fa-solid ${action.icon} text-xs"></i>
+              </span>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-400">
+                  #0${action.id}
+                </span>
+                <button onclick="toggleComplete(${action.id}, event)" title="${isDone ? 'Concluído' : 'Marcar como executado'}" class="w-7 h-7 rounded-lg border flex items-center justify-center transition ${
+                  isDone 
+                    ? 'bg-emerald-500 border-emerald-400 text-slate-950' 
+                    : 'bg-slate-900/80 border-slate-700 text-slate-500 hover:text-sky-300 hover:border-sky-400'
+                }">
+                  <i class="fa-solid fa-check text-xs"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Title & Badge -->
+            <span class="text-[10px] font-mono font-semibold text-cyan-400 uppercase tracking-wider block mb-1">
+              ${action.badge}
+            </span>
+            <h3 class="font-bold text-slate-100 text-sm leading-snug group-hover:text-sky-300 transition ${isDone ? 'line-through text-slate-400' : ''}">
+              ${action.title}
+            </h3>
+
+            <!-- Original Table Text -->
+            <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">
+              ${action.rawText}
+            </p>
+          </div>
+
+          <!-- Bottom Footer of Card -->
+          <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+            <span class="flex items-center gap-1">
+              <i class="fa-solid fa-user-tie text-[10px] text-sky-400"></i>
+              ${action.categoryName}
+            </span>
+            <span class="text-sky-400/80 group-hover:text-sky-300 font-semibold flex items-center gap-1">
+              Detalhes <i class="fa-solid fa-arrow-right text-[9px]"></i>
+            </span>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function renderListView() {
+      const container = document.getElementById('listView');
+      container.innerHTML = '';
+      const filtered = getFilteredActions();
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="py-16 text-center text-slate-500">
+            <i class="fa-solid fa-filter-circle-xmark text-4xl mb-3 text-slate-600"></i>
+            <p class="text-sm">Nenhuma atividade localizada com os filtros selecionados.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(action => {
+        const isDone = completedTasks.has(action.id);
+        const item = document.createElement('div');
+        item.className = `glass-card rounded-2xl p-4 sm:p-5 border transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer hover:bg-slate-900/80 ${
+          isDone ? 'border-emerald-500/40 bg-emerald-950/15' : 'border-slate-800 hover:border-sky-400/50'
+        }`;
+
+        item.onclick = () => openModal(action.id);
+
+        item.innerHTML = `
+          <div class="flex items-start gap-4">
+            <!-- Checkbox Action -->
+            <button onclick="toggleComplete(${action.id}, event)" class="mt-0.5 w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 transition ${
+              isDone 
+                ? 'bg-emerald-500 border-emerald-400 text-slate-950 font-bold' 
+                : 'bg-slate-900 border-slate-700 text-transparent hover:border-sky-400'
+            }">
+              <i class="fa-solid fa-check text-xs"></i>
+            </button>
+
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-sky-500/15 text-sky-300 border border-sky-500/30">
+                  Item 0${action.id}
+                </span>
+                <span class="text-xs font-semibold text-slate-300">${action.categoryName}</span>
+                <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950 px-2 py-0.5 rounded border border-cyan-800">${action.badge}</span>
+              </div>
+              <h3 class="font-bold text-sm sm:text-base text-white mt-1 group-hover:text-sky-300 ${isDone ? 'line-through text-slate-400' : ''}">
+                ${action.rawText}
+              </h3>
+              <p class="text-xs text-slate-400 mt-1">
+                <strong>Entregável:</strong> ${action.deliverable}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 self-end sm:self-center shrink-0">
+            <span class="text-xs px-2.5 py-1 rounded-lg font-mono font-semibold ${
+              action.complexity === 'Alta' ? 'bg-amber-950/60 text-amber-300 border border-amber-800' : 'bg-blue-950/60 text-blue-300 border border-blue-800'
+            }">
+              Complexidade: ${action.complexity}
+            </span>
+            <button onclick="openModal(${action.id})" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-sky-400 hover:text-white transition flex items-center gap-1.5 border border-slate-700">
+              <span>Detalhes</span>
+              <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+          </div>
+        `;
+
+        container.appendChild(item);
+      });
+    }
+
+    function renderCurrentView() {
+      if (currentView === 'grid') {
+        renderGridView();
+      } else {
+        renderListView();
+      }
+    }
+
+    // Switch between Grid and List views
+    function switchView(mode) {
+      currentView = mode;
+      const gridContainer = document.getElementById('gridView');
+      const listContainer = document.getElementById('listView');
+      const gridBtn = document.getElementById('viewGridBtn');
+      const listBtn = document.getElementById('viewListBtn');
+
+      if (mode === 'grid') {
+        gridContainer.classList.remove('hidden');
+        listContainer.classList.add('hidden');
+        gridBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-gradient-to-r from-sky-600 to-cyan-500 text-white shadow-md";
+        listBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all duration-200";
+        renderGridView();
+      } else {
+        gridContainer.classList.add('hidden');
+        listContainer.classList.remove('hidden');
+        listBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-gradient-to-r from-sky-600 to-cyan-500 text-white shadow-md";
+        gridBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all duration-200";
+        renderListView();
+      }
+    }
+
+    // Handle filter pills
+    function setCategoryFilter(category) {
+      currentCategory = category;
+      document.querySelectorAll('.category-pill').forEach(btn => {
+        btn.classList.remove('bg-sky-500', 'text-white');
+        btn.classList.add('text-slate-400', 'bg-slate-900/80');
+      });
+
+      const activeBtn = document.getElementById(`filter-pill-${category}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-400', 'bg-slate-900/80');
+        activeBtn.classList.add('bg-sky-500', 'text-white');
+      }
+
+      renderCurrentView();
+    }
+
+    function handleSearch(val) {
+      searchQuery = val;
+      renderCurrentView();
+    }
+
+    function openModal(id) {
+      const action = gnpoActions.find(a => a.id === id);
+      if (!action) return;
+
+      const isDone = completedTasks.has(action.id);
+      const modal = document.getElementById('detailModal');
+      const body = document.getElementById('modalBody');
+
+      body.innerHTML = `
+        <div class="flex items-start gap-3.5 mb-4">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-600 to-cyan-500 flex items-center justify-center text-white shrink-0 shadow-lg shadow-sky-500/20">
+            <i class="fa-solid ${action.icon} text-lg"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 font-bold border border-sky-500/30">
+                AÇÃO HUMANA #${action.id}
+              </span>
+              <span class="text-xs text-cyan-400 font-semibold">${action.categoryName}</span>
+              <span class="text-xs text-slate-400">• Complexidade ${action.complexity}</span>
+            </div>
+            <h2 class="text-lg font-bold text-white mt-1">${action.title}</h2>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 text-xs text-slate-300 leading-relaxed mb-4">
+          <div class="text-[10px] uppercase font-mono text-slate-400 font-bold mb-1">Enunciado Original da Tabela:</div>
+          "${action.rawText}"
+        </div>
+
+        <div class="grid grid-cols-1 gap-3 text-xs mb-5">
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+            <div class="font-bold text-sky-400 flex items-center gap-1.5 mb-1">
+              <i class="fa-solid fa-users-gear text-xs"></i>
+              Responsabilidade / Perfil Executor
+            </div>
+            <div class="text-slate-300 pl-4">${action.responsibles}</div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+            <div class="font-bold text-cyan-400 flex items-center gap-1.5 mb-1">
+              <i class="fa-solid fa-file-circle-check text-xs"></i>
+              Produto / Entregável Esperado
+            </div>
+            <div class="text-slate-300 pl-4">${action.deliverable}</div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+            <div class="font-bold text-teal-400 flex items-center gap-1.5 mb-1">
+              <i class="fa-solid fa-compass-drafting text-xs"></i>
+              Diretrizes de Aplicação Técnica
+            </div>
+            <div class="text-slate-300 pl-4">${action.guidelines}</div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-3">
+          <button onclick="toggleComplete(${action.id}); openModal(${action.id});" class="flex-1 py-2.5 px-4 rounded-xl font-semibold text-xs transition flex items-center justify-center gap-2 ${
+            isDone 
+              ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/50 hover:bg-emerald-600/40' 
+              : 'bg-gradient-to-r from-sky-600 to-cyan-500 text-white hover:opacity-95 shadow-lg shadow-sky-500/20'
+          }">
+            <i class="fa-solid ${isDone ? 'fa-circle-check' : 'fa-check'}"></i>
+            <span>${isDone ? 'Marcado como Executado (Clique para Desmarcar)' : 'Marcar Esta Atividade como Executada'}</span>
+          </button>
+          
+          <button onclick="closeModal()" class="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition border border-slate-700">
+            Fechar
+          </button>
+        </div>
+      `;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('detailModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Close modal on Escape or clicking outside
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    document.getElementById('detailModal').addEventListener('click', (e) => {
+      if (e.target.id === 'detailModal') closeModal();
+    });
+
+    // Initialize application on load
+    window.onload = function() {
+      loadSavedState();
+      updateMetrics();
+      renderCurrentView();
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fluxo Operacional: Ação Humana vs. RPA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            human: {
+              DEFAULT: '#0284c7',
+              glow: '#38bdf8',
+              surface: 'rgba(2, 132, 199, 0.1)',
+              border: 'rgba(56, 189, 248, 0.35)',
+            },
+            rpa: {
+              DEFAULT: '#9333ea',
+              glow: '#c084fc',
+              surface: 'rgba(147, 51, 234, 0.1)',
+              border: 'rgba(192, 132, 252, 0.35)',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at 15% 20%, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 85% 75%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
+                  #090d16;
+      background-attachment: fixed;
+    }
+
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .glass-card {
+      background: rgba(23, 32, 54, 0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(71, 85, 105, 0.5);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.7);
+    }
+
+    .pulse-glow {
+      animation: pulseGlow 3s infinite alternate ease-in-out;
+    }
+    @keyframes pulseGlow {
+      0% { opacity: 0.6; filter: drop-shadow(0 0 4px currentColor); }
+      100% { opacity: 1; filter: drop-shadow(0 0 12px currentColor); }
+    }
+  </style>
+  
+  <script>
+    function clickHandler(event) {
+      if (event.button === 2 || event.button === 3) {
+        document.oncontextmenu = function () { return false; };
+      }
+    }
+    document.onmousedown = clickHandler;
+    document.oncontextmenu = new Function("return false;");
+
+    function mensagem() {
+      alert('Conteúdo bloqueado!');
+      return false;
+    }
+
+    function bloquearCopia(Event) {
+      var e = Event ? Event : window.event;
+      var tecla = (e.keyCode) ? e.keyCode : e.which;
+      if (tecla === 17) {
+        mensagem();
+      }
+    }
+    document.onkeydown = bloquearCopia;
+  </script>
+  
+  
+  
+</head>
+
+<body class="text-slate-200 min-h-screen flex flex-col font-sans antialiased selection:bg-purple-600 selection:text-white">
+
+  <header class="sticky top-0 z-40 border-b border-slate-800/80 glass-panel">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center space-x-3.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-sky-500/20 ring-1 ring-white/20">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            Fluxo Operacional Integrado
+            <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-slate-800 text-sky-400 border border-sky-500/20 font-normal">DOP & GNPO</span>
+          </h1>
+          <p class="text-xs text-slate-400">Mapeamento de tarefas: Ações Humanas vs. Automações Robóticas (RPA)</p>
+        </div>
+      </div>
+
+      <!-- Controls: View Mode & Filters -->
+      <div class="flex items-center flex-wrap gap-2.5">
+        <!-- View Mode Switcher -->
+        <div class="bg-slate-900/90 p-1 rounded-xl border border-slate-700/60 flex items-center shadow-inner">
+          <button id="viewStepBtn" onclick="switchView('step')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-gradient-to-r from-sky-500 to-purple-600 text-white shadow-md">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+            <span>Passo a Passo</span>
+          </button>
+          <button id="viewKanbanBtn" onclick="switchView('kanban')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all duration-200">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" /></svg>
+            <span>Todas as Colunas</span>
+          </button>
+        </div>
+
+        <!-- Filter Dropdown / Pills -->
+        <div class="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-700/60">
+          <button onclick="setFilter('all')" id="filter-all" class="filter-btn active text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-slate-700 text-white transition">Todos</button>
+          <button onclick="setFilter('human')" id="filter-human" class="filter-btn text-xs font-semibold px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-sky-300 transition flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-sky-400"></span> Humano
+          </button>
+          <button onclick="setFilter('rpa')" id="filter-rpa" class="filter-btn text-xs font-semibold px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-purple-300 transition flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-purple-400"></span> RPA
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+    <!-- KPI / Top Summary Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+      <div class="glass-card rounded-2xl p-3.5 flex items-center gap-3 border-l-4 border-l-sky-500">
+        <div class="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center text-sky-400">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+        </div>
+        <div>
+          <div class="text-xl font-bold text-white">2 Fases</div>
+          <div class="text-xs text-sky-400/80 font-medium">Ações Humanas (DOP/GNPO)</div>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-3.5 flex items-center gap-3 border-l-4 border-l-purple-500">
+        <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+        </div>
+        <div>
+          <div class="text-xl font-bold text-white">4 Fases</div>
+          <div class="text-xs text-purple-400/80 font-medium">Automação Robótica (RPA)</div>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-3.5 flex items-center gap-3 border-l-4 border-l-emerald-500">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </div>
+        <div>
+          <div class="text-xl font-bold text-white">23+</div>
+          <div class="text-xs text-emerald-400/80 font-medium">Atividades Mapeadas</div>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-3.5 flex items-center gap-3 border-l-4 border-l-indigo-500">
+        <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+        </div>
+        <div>
+          <div class="text-xl font-bold text-white">100%</div>
+          <div class="text-xs text-indigo-400/80 font-medium">Rastreabilidade & BI</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="stepViewContainer" class="flex flex-col gap-6">
+
+      <!-- Interactive Stepper Navigation Bar -->
+      <div class="glass-panel p-2.5 sm:p-3 rounded-2xl shadow-xl">
+        <div class="flex items-center justify-between overflow-x-auto pb-1 gap-2 sm:gap-3" id="stepperNav">
+          <!-- Stepper buttons will be injected dynamically -->
+        </div>
+      </div>
+
+      <!-- Focused Stage Content Card -->
+      <div id="focusedStageContainer" class="glass-card rounded-3xl p-5 sm:p-8 transition-all duration-300 relative overflow-hidden">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Navigation Arrows -->
+      <div class="flex items-center justify-between px-1">
+        <button id="prevBtn" onclick="prevStep()" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm font-semibold transition border border-slate-700 disabled:opacity-30 disabled:cursor-not-allowed">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+          Etapa Anterior
+        </button>
+        <span id="stepCounter" class="text-xs font-mono text-slate-400 uppercase tracking-widest">Etapa 1 de 6</span>
+        <button id="nextBtn" onclick="nextStep()" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-purple-600 hover:opacity-95 text-white text-sm font-semibold transition shadow-lg shadow-purple-500/20 disabled:opacity-30 disabled:cursor-not-allowed">
+          Próxima Etapa
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+        </button>
+      </div>
+
+    </div>
+
+    <div id="kanbanViewContainer" class="hidden flex flex-col gap-4">
+      <div class="flex items-center justify-between text-xs text-slate-400">
+        <span>Arraste horizontalmente ou use a barra de rolagem para navegar por todas as colunas do processo:</span>
+        <span class="font-mono text-slate-400">6 Colunas Operacionais</span>
+      </div>
+
+      <!-- Scrollable Container -->
+      <div class="overflow-x-auto pb-6 pt-2">
+        <div class="flex gap-5 min-w-[1550px]" id="kanbanColumns">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-slate-800/80 py-4 glass-panel mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 text-sky-400 font-semibold">
+          <span class="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span>
+          Ação Humana
+        </span>
+        <span>•</span>
+        <span class="inline-flex items-center gap-1.5 text-purple-400 font-semibold">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          Automação Robótica (RPA)
+        </span>
+      </div>
+      <div>Arquitetura DOP / GNPO • Copasa</div>
+    </div>
+  </footer>
+
+  <script>
+    // Database of Stages and Actions
+    const stagesData = [
+      {
+        id: "step-1",
+        stepNumber: 1,
+        title: "Entrada de dados",
+        subtitle: "Setores DOP",
+        type: "human", // human or rpa
+        category: "Ação Humana",
+        summary: "1 Fluxo operacionalizado por ação humana",
+        description: "Ponto de entrada inicial do fluxo onde os setores solicitantes realizam o cadastro padronizado.",
+        actions: [
+          {
+            title: "Registro da Demanda",
+            desc: "Registro da demanda via formulário de coleta estruturado no aplicativo Painel de Serviços.",
+            badge: "Início do Processo",
+            status: "Manual"
+          }
+        ]
+      },
+      {
+        id: "step-2",
+        stepNumber: 2,
+        title: "Registro Inteligente",
+        subtitle: "Automação Robótica",
+        type: "rpa",
+        category: "Automação Robótica (RPA)",
+        summary: "1 fluxo - 4 ações de RPA integradas",
+        description: "Robôs realizam a triagem, separação e orquestração de disparos e status no ecossistema SharePoint.",
+        actions: [
+          {
+            title: "1. Separação Automática de Dados",
+            desc: "Separação e classificação automática de dados coletados via formulário SharePoint.",
+            badge: "RPA - Triagem",
+            status: "Automático"
+          },
+          {
+            title: "2. Criação de Documentação",
+            desc: "Criação padronizada de documentação para aprovação e distribuição automática por SPs.",
+            badge: "RPA - Geração de Docs",
+            status: "Automático"
+          },
+          {
+            title: "3. Disparo de Fluxos RPA",
+            desc: "Disparo automático dos fluxos de trabalho de acordo com as regras de cada tipo de processo.",
+            badge: "RPA - Orquestração",
+            status: "Automático"
+          },
+          {
+            title: "4. Status e Respostas ao Cliente",
+            desc: "Disparo de avisos de alterações de Status e registro automatizado das respostas do cliente.",
+            badge: "RPA - Comunicação",
+            status: "Automático"
+          }
+        ]
+      },
+      {
+        id: "step-3",
+        stepNumber: 3,
+        title: "Análise Preliminar",
+        subtitle: "Automação Robótica",
+        type: "rpa",
+        category: "Automação Robótica (RPA)",
+        summary: "1 Fluxo - com 2 ações de RPA",
+        description: "Aplicação dinâmica de regras de negócio configuradas pelos gestores para encaminhamento direcionado.",
+        note: "Nota do Gestor: Os critérios de seleção são totalmente editáveis e adaptam-se aos pedidos da gestão.",
+        actions: [
+          {
+            title: "1. Filtro Automático e Seleção",
+            desc: "Aplicação de filtros automáticos e verificação contra critérios pré-definidos no sistema.",
+            badge: "RPA - Filtro",
+            status: "Automático"
+          },
+          {
+            title: "2. Distribuição por Supervisão",
+            desc: "Encaminhamento e distribuição de fluxos segmentados por equipe de supervisão para avaliação.",
+            badge: "RPA - Distribuição",
+            status: "Automático"
+          }
+        ]
+      },
+      {
+        id: "step-4",
+        stepNumber: 4,
+        title: "Alarmes e Notificações",
+        subtitle: "Automação Robótica",
+        type: "rpa",
+        category: "Automação Robótica (RPA)",
+        summary: "2 fluxos - 1 conjunto de ações em cada",
+        description: "Comunicação em tempo real com demandantes, supervisores e gestores responsáveis por aprovação.",
+        actions: [
+          {
+            title: "Fluxo 1: Confirmação & Solicitação de Aprovação",
+            desc: "Aviso de registro de demanda ao demandante e ao gestor responsável + Avisos de solicitação de aprovação formal com captura de resposta e gravação direta no sistema.",
+            badge: "RPA - Alerta Nível 1",
+            status: "Automático"
+          },
+          {
+            title: "Fluxo 2: Status & Cobrança de Pendências",
+            desc: "Avisos proativos de alterações de status, registro de modificações na demanda e régua de cobrança automática de pendências acumuladas.",
+            badge: "RPA - Alerta Nível 2",
+            status: "Automático"
+          }
+        ]
+      },
+      {
+        id: "step-5",
+        stepNumber: 5,
+        title: "Armazenamento Inteligente",
+        subtitle: "Automação Robótica",
+        type: "rpa",
+        category: "Automação Robótica (RPA)",
+        summary: "1 fluxo - com 5 ações de RPA",
+        description: "Rotinas noturnas e scripts instantâneos para saneamento de dados, gravação e alimentação do Power BI.",
+        actions: [
+          {
+            title: "1. Script Noturno de Atualização de Datas",
+            desc: "Processamento em lote agendado para atualização de datas e prazos regulatórios.",
+            badge: "RPA - Script Noturno",
+            status: "Agendado"
+          },
+          {
+            title: "2. Tabulação da Base de Dados",
+            desc: "Extração e tabulação estruturada da base de dados pronta para leitura no Power BI.",
+            badge: "RPA - ETL / BI",
+            status: "Automático"
+          },
+          {
+            title: "3. Atualização do Power BI",
+            desc: "Atualização automática e agendada dos relatórios e painéis do Power BI.",
+            badge: "RPA - BI Sync",
+            status: "Agendado"
+          },
+          {
+            title: "4. Atualização Automática de Status",
+            desc: "Consolidação e recálculo noturno de status operacionais de todos os itens cadastrados.",
+            badge: "RPA - Batch Job",
+            status: "Noturno"
+          },
+          {
+            title: "5. Script Instantâneo de Serviços",
+            desc: "Execução em tempo real de serviços e gatilhos disparados por eventos imediatos.",
+            badge: "RPA - Tempo Real",
+            status: "Tempo Real"
+          }
+        ]
+      },
+      {
+        id: "step-6",
+        stepNumber: 6,
+        title: "Análise de Dados",
+        subtitle: "Setor Técnico GNPO",
+        type: "human",
+        category: "Ação Humana",
+        summary: "Diversos fluxos operacionalizados por ação humana (Várias ações)",
+        description: "Camada de inteligência técnica especializada, análise laudal, conformidade e tomada de decisão corporativa.",
+        actions: [
+          { title: "1. Leitura e Análise Técnica", desc: "Leitura e análise detalhada de projetos, processos, documentações e laudos técnicos.", badge: "Engenharia / Técnico" },
+          { title: "2. Aplicação da Legislação", desc: "Aplicação da lei vigente e mobilização de conhecimento técnico especializado.", badge: "Conformidade" },
+          { title: "3. Governança e Regras Corporativas", desc: "Aplicação estrita das regras e diretrizes corporativas no escopo dos processos.", badge: "Governança" },
+          { title: "4. Suporte e Atendimento ao Cliente", desc: "Suporte e atendimento especializado ao cliente e parceiros no âmbito da DOP.", badge: "Atendimento" },
+          { title: "5. Apontamento de Soluções", desc: "Elaboração e apontamento de soluções técnicas e corporativas de alta complexidade.", badge: "Soluções" },
+          { title: "6. Gestão Financeira e Compras", desc: "Efetivação de compras, estruturação de projetos e transações de recursos financeiros.", badge: "Financeiro" },
+          { title: "7. Relatórios de Business Intelligence", desc: "Emissão de relatórios e análises aprofundadas de Business Intelligence (BI).", badge: "Analytics" },
+          { title: "8. Notas Técnicas e Aditivos", desc: "Emissão e validação de Notas Técnicas, Aditivos Contratuais e pareceres correlatos.", badge: "Contratos" },
+          { title: "9. Planejamento e Orçamento", desc: "Processos estratégicos pertinentes ao Planejamento e Orçamento corporativo anual.", badge: "Planejamento" },
+          { title: "10. Demandas DOP e Copasa", desc: "Outras demandas institucionais e operacionais atribuídas no âmbito da DOP e da Copasa.", badge: "Corporativo" }
+        ]
+      }
+    ];
+
+    // State Variables
+    let currentStepIndex = 0;
+    let currentFilter = 'all'; // all, human, rpa
+    let currentView = 'step'; // step or kanban
+
+    // SVGs for Icons
+    const humanIconSvg = `
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2a5 5 0 105 5 5 5 0 00-5-5zm0 12c-5.33 0-8 2.67-8 5v1a2 2 0 002 2h12a2 2 0 002-2v-1c0-2.33-2.67-5-8-5z"/>
+      </svg>
+    `;
+
+    const botIconSvg = `
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 8h-1.1A6.98 6.98 0 0013 3.1V2a1 1 0 00-2 0v1.1A6.98 6.98 0 006.1 8H5a3 3 0 00-3 3v2a3 3 0 003 3h1.1A6.98 6.98 0 0011 20.9V22a1 1 0 002 0v-1.1a6.98 6.98 0 004.9-4.9H19a3 3 0 003-3v-2a3 3 0 00-3-3zM8 13a2 2 0 112-2 2 2 0 01-2 2zm8 0a2 2 0 112-2 2 2 0 01-2 2z"/>
+      </svg>
+    `;
+
+    function renderStepperNav() {
+      const container = document.getElementById('stepperNav');
+      container.innerHTML = '';
+
+      stagesData.forEach((stage, idx) => {
+        const isCurrent = idx === currentStepIndex;
+        const isHuman = stage.type === 'human';
+
+        const btn = document.createElement('button');
+        btn.onclick = () => selectStep(idx);
+        btn.className = `flex-1 min-w-[170px] sm:min-w-[190px] text-left p-3 rounded-xl transition-all duration-300 relative group border ${
+          isCurrent 
+            ? (isHuman ? 'bg-sky-950/70 border-sky-400 shadow-lg shadow-sky-500/20' : 'bg-purple-950/70 border-purple-400 shadow-lg shadow-purple-500/20')
+            : 'bg-slate-900/60 border-slate-800/80 hover:bg-slate-800/60'
+        }`;
+
+        btn.innerHTML = `
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded ${
+              isHuman 
+                ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30' 
+                : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+            }">
+              ETAPA 0${stage.stepNumber}
+            </span>
+            <span class="${isHuman ? 'text-sky-400' : 'text-purple-400'}">
+              ${isHuman ? humanIconSvg : botIconSvg}
+            </span>
+          </div>
+          <div class="text-xs font-bold ${isCurrent ? 'text-white' : 'text-slate-300'} truncate">${stage.title}</div>
+          <div class="text-[11px] ${isHuman ? 'text-sky-400/80' : 'text-purple-400/80'} truncate font-medium">${stage.subtitle}</div>
+          <div class="text-[10px] text-slate-400 mt-1 flex items-center gap-1 font-mono">
+            <span>●</span> ${stage.actions.length} ${stage.actions.length === 1 ? 'Ação' : 'Ações'}
+          </div>
+        `;
+        container.appendChild(btn);
+      });
+    }
+
+    function renderFocusedStage() {
+      const stage = stagesData[currentStepIndex];
+      const isHuman = stage.type === 'human';
+      const container = document.getElementById('focusedStageContainer');
+
+      // Update Navigation Buttons & Counter
+      document.getElementById('prevBtn').disabled = (currentStepIndex === 0);
+      document.getElementById('nextBtn').disabled = (currentStepIndex === stagesData.length - 1);
+      document.getElementById('stepCounter').innerText = `Etapa ${stage.stepNumber} de ${stagesData.length}`;
+
+      container.innerHTML = `
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-slate-700/60">
+          <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${
+              isHuman 
+                ? 'bg-gradient-to-tr from-sky-600 to-sky-400 text-white shadow-sky-500/30' 
+                : 'bg-gradient-to-tr from-purple-600 to-indigo-500 text-white shadow-purple-500/30'
+            }">
+              <div class="pulse-glow">${isHuman ? humanIconSvg : botIconSvg}</div>
+            </div>
+            <div>
+              <div class="flex items-center gap-2.5 flex-wrap">
+                <span class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full ${
+                  isHuman 
+                    ? 'bg-sky-500/20 text-sky-300 border border-sky-500/40' 
+                    : 'bg-purple-500/20 text-purple-300 border border-purple-500/40'
+                }">
+                  Fase 0${stage.stepNumber} • ${stage.category}
+                </span>
+                <span class="text-xs text-slate-400 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  ${stage.summary}
+                </span>
+              </div>
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 tracking-tight">${stage.title}</h2>
+              <p class="text-sm font-semibold ${isHuman ? 'text-sky-400' : 'text-purple-400'}">${stage.subtitle}</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 px-4 py-2.5 rounded-xl border border-slate-800 text-xs text-slate-400 max-w-sm">
+            ${stage.description}
+          </div>
+        </div>
+
+        ${stage.note ? `
+          <div class="mt-4 p-3.5 rounded-xl bg-blue-950/40 border border-sky-500/30 text-xs text-sky-200 flex items-center gap-2.5">
+            <svg class="w-5 h-5 text-sky-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span><strong>Regra de Negócio:</strong> ${stage.note}</span>
+          </div>
+        ` : ''}
+
+        <!-- Actions List Grid -->
+        <div class="mt-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+              Ações Executadas Nesta Etapa (${stage.actions.length})
+            </h3>
+            <span class="text-xs text-slate-500">Clique para expandir/analisar</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            ${stage.actions.map((action, i) => `
+              <div class="p-4 rounded-2xl bg-slate-900/70 border border-slate-800/80 hover:border-slate-700 hover:bg-slate-900 transition-all duration-200 group">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="font-bold text-sm text-slate-200 group-hover:text-white flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg ${isHuman ? 'bg-sky-500/20 text-sky-400' : 'bg-purple-500/20 text-purple-400'} flex items-center justify-center text-xs font-mono font-bold shrink-0">
+                      ${i + 1}
+                    </span>
+                    <span>${action.title}</span>
+                  </div>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-full ${
+                    isHuman 
+                      ? 'bg-sky-950 text-sky-300 border border-sky-800/80' 
+                      : 'bg-purple-950 text-purple-300 border border-purple-800/80'
+                  } shrink-0">
+                    ${action.badge || (isHuman ? 'Humano' : 'RPA')}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-400 mt-2.5 leading-relaxed pl-8">
+                  ${action.desc}
+                </p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderKanbanView() {
+      const container = document.getElementById('kanbanColumns');
+      container.innerHTML = '';
+
+      stagesData.forEach((stage, idx) => {
+        const isHuman = stage.type === 'human';
+
+        // Check if matches active filter
+        if (currentFilter !== 'all' && stage.type !== currentFilter) {
+          return;
+        }
+
+        const col = document.createElement('div');
+        col.className = 'w-[280px] shrink-0 glass-card rounded-2xl flex flex-col border border-slate-800/90 shadow-xl overflow-hidden';
+        
+        col.innerHTML = `
+          <!-- Column Header -->
+          <div class="p-4 border-b border-slate-800 bg-slate-900/60 flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
+                isHuman 
+                  ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30' 
+                  : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+              }">
+                FASE 0${stage.stepNumber}
+              </span>
+              <div class="p-1.5 rounded-lg ${isHuman ? 'bg-sky-500/10 text-sky-400' : 'bg-purple-500/10 text-purple-400'}">
+                ${isHuman ? humanIconSvg : botIconSvg}
+              </div>
+            </div>
+
+            <div>
+              <h4 class="font-bold text-white text-sm tracking-tight leading-snug">${stage.title}</h4>
+              <p class="text-xs ${isHuman ? 'text-sky-400' : 'text-purple-400'} font-semibold">${stage.subtitle}</p>
+            </div>
+
+            <div class="text-[11px] text-slate-400 font-mono bg-slate-950/60 px-2 py-1 rounded border border-slate-800/80 truncate">
+              ${stage.summary}
+            </div>
+          </div>
+
+          <!-- Column Tasks List -->
+          <div class="p-3 flex-1 flex flex-col gap-2.5 overflow-y-auto max-h-[580px]">
+            ${stage.actions.map((act, i) => `
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition group">
+                <div class="flex items-start justify-between gap-1 mb-1">
+                  <div class="text-xs font-bold text-slate-200 group-hover:text-white leading-tight">
+                    ${act.title}
+                  </div>
+                </div>
+                <div class="text-[11px] text-slate-400 leading-relaxed mt-1">
+                  ${act.desc}
+                </div>
+                <div class="mt-2.5 flex items-center justify-between">
+                  <span class="text-[9px] font-mono px-1.5 py-0.5 rounded ${
+                    isHuman 
+                      ? 'bg-sky-950 text-sky-300 border border-sky-900' 
+                      : 'bg-purple-950 text-purple-300 border border-purple-900'
+                  }">
+                    ${act.badge || 'Atividade'}
+                  </span>
+                  <span class="text-[9px] text-slate-500 font-mono">#${i + 1}</span>
+                </div>
+              </div>
+            `).join('')}
+
+            ${stage.note ? `
+              <div class="p-2.5 rounded-xl bg-blue-950/30 border border-sky-500/20 text-[10px] text-sky-300 leading-tight">
+                <strong>Nota:</strong> ${stage.note}
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- Column Footer Button to Jump to Focus Mode -->
+          <div class="p-2.5 border-t border-slate-800/80 bg-slate-900/40">
+            <button onclick="selectStepAndSwitch(${idx})" class="w-full py-1.5 px-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center justify-center gap-1.5">
+              <span>Examinar em Foco</span>
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            </button>
+          </div>
+        `;
+
+        container.appendChild(col);
+      });
+    }
+
+    function selectStep(index) {
+      currentStepIndex = index;
+      renderStepperNav();
+      renderFocusedStage();
+    }
+
+    function selectStepAndSwitch(index) {
+      currentStepIndex = index;
+      switchView('step');
+    }
+
+    function nextStep() {
+      if (currentStepIndex < stagesData.length - 1) {
+        currentStepIndex++;
+        renderStepperNav();
+        renderFocusedStage();
+        scrollActiveTabIntoView();
+      }
+    }
+
+    function prevStep() {
+      if (currentStepIndex > 0) {
+        currentStepIndex--;
+        renderStepperNav();
+        renderFocusedStage();
+        scrollActiveTabIntoView();
+      }
+    }
+
+    function scrollActiveTabIntoView() {
+      const container = document.getElementById('stepperNav');
+      const buttons = container.querySelectorAll('button');
+      if (buttons[currentStepIndex]) {
+        buttons[currentStepIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+
+    function switchView(viewMode) {
+      currentView = viewMode;
+      const stepContainer = document.getElementById('stepViewContainer');
+      const kanbanContainer = document.getElementById('kanbanViewContainer');
+      const stepBtn = document.getElementById('viewStepBtn');
+      const kanbanBtn = document.getElementById('viewKanbanBtn');
+
+      if (viewMode === 'step') {
+        stepContainer.classList.remove('hidden');
+        kanbanContainer.classList.add('hidden');
+        
+        stepBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-gradient-to-r from-sky-500 to-purple-600 text-white shadow-md";
+        kanbanBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all duration-200";
+        
+        renderStepperNav();
+        renderFocusedStage();
+      } else {
+        stepContainer.classList.add('hidden');
+        kanbanContainer.classList.remove('hidden');
+
+        kanbanBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-gradient-to-r from-sky-500 to-purple-600 text-white shadow-md";
+        stepBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all duration-200";
+
+        renderKanbanView();
+      }
+    }
+
+    function setFilter(filterType) {
+      currentFilter = filterType;
+      
+      // Update UI button pills
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('bg-slate-700', 'text-white');
+        btn.classList.add('text-slate-400');
+      });
+
+      const activeBtn = document.getElementById(`filter-${filterType}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-400');
+        activeBtn.classList.add('bg-slate-700', 'text-white');
+      }
+
+      // If in Kanban view, re-render filtered columns
+      if (currentView === 'kanban') {
+        renderKanbanView();
+      } else {
+        // If current step is filtered out, move to first matching step
+        if (filterType !== 'all') {
+          const matchIdx = stagesData.findIndex(s => s.type === filterType);
+          if (matchIdx !== -1) {
+            currentStepIndex = matchIdx;
+          }
+        }
+        renderStepperNav();
+        renderFocusedStage();
+      }
+    }
+
+    // Keyboard navigation (Arrow keys)
+    window.addEventListener('keydown', (e) => {
+      if (currentView === 'step') {
+        if (e.key === 'ArrowRight') nextStep();
+        if (e.key === 'ArrowLeft') prevStep();
+      }
+    });
+
+    window.onload = function() {
+      renderStepperNav();
+      renderFocusedStage();
+      renderKanbanView();
+    };
+  </script>
+</body>
+</html>

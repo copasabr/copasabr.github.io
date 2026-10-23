@@ -193,6 +193,9 @@
     font-size: 15px;
     font-weight: bold;
     text-decoration: none;
+    line-height: normal;
+    appearance: none;
+    -webkit-appearance: none;
     cursor: pointer;
     transition: transform .2s, background-color .2s;
   }
@@ -277,7 +280,7 @@
   <!-- ========================= -->
   <!-- BOTÃO PAINEL DO CLIENTE   -->
   <!-- ========================= -->
-  <a class="btn-painel-cliente" href="PAINEL-PESQUISA.html" target="_self">Painel do cliente</a>
+  <button type="button" class="btn-painel-cliente" onclick="window.location.href='PAINEL-PESQUISA.html';">Painel do cliente</button>
 
   <!-- ========================= -->
   <!-- SELETOR DE PLANO DE FUNDO -->

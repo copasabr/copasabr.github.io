@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fluxo da Demanda</title>
+<style>
+  :root{
+    --bg:#000; --card:#0b0f14; --card2:#11161d; --line:#1e2733;
+    --txt:#e8eef5; --mut:#8a97a8; --a1:#00a3e0; --a2:#22c55e; --warn:#f5a524;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#000;color:var(--txt);
+    font-family:"Segoe UI",Roboto,Arial,sans-serif;overflow:hidden;
+    user-select:none;-webkit-user-select:none;-ms-user-select:none;-webkit-touch-callout:none}
+  #app{height:100vh;display:flex;flex-direction:column;padding:6px 10px 8px;gap:5px}
+
+  /* ---------- FLUXO SVG ---------- */
+  #flow{width:100%;height:auto;max-height:92px;flex:0 0 auto;display:block}
+  .node{cursor:pointer}
+  .node .bg{fill:#0b0f14;stroke:#26313f;stroke-width:2;transition:stroke .3s}
+  .node .ring{fill:none;stroke:var(--a1);stroke-width:3.2;stroke-linecap:round;
+    transform:rotate(-90deg);transform-box:fill-box;transform-origin:center;
+    transition:stroke-dashoffset .7s cubic-bezier(.4,1.4,.5,1),stroke .3s}
+  .node .ico{fill:none;stroke:#8a97a8;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .3s}
+  .node .lbl{fill:#8a97a8;font-size:9.5px;font-weight:600;text-anchor:middle;transition:fill .3s}
+  .node .pct{fill:#5f6b7a;font-size:8.5px;text-anchor:middle}
+  .node:hover .bg{stroke:#3a4a5e}
+  .node.active .bg{stroke:var(--a1)}
+  .node.active .ico{stroke:#fff}
+  .node.active .lbl{fill:#fff}
+  .node.done .ring{stroke:var(--a2)}
+  .node.done .ico{stroke:var(--a2)}
+  .node .halo{fill:none;stroke:var(--a1);stroke-width:1.5;opacity:0}
+  .node.active .halo{animation:halo 2s ease-out infinite}
+  @keyframes halo{0%{r:22;opacity:.7}100%{r:31;opacity:0}}
+  .link{stroke:#1e2733;stroke-width:2}
+  .flowline{stroke:var(--a1);stroke-width:2;stroke-dasharray:4 7;animation:flow 1.2s linear infinite;opacity:.55}
+  @keyframes flow{to{stroke-dashoffset:-22}}
+
+  /* ---------- CABEÇALHO DA ETAPA ---------- */
+  #head{flex:0 0 auto;border-left:3px solid var(--a1);padding:2px 0 2px 8px;animation:fadeIn .4s}
+  #head h1{font-size:13px;letter-spacing:.4px;text-transform:uppercase;color:#fff}
+  #head p{font-size:10.5px;color:var(--mut);margin-top:1px}
+
+  /* ---------- LISTA ---------- */
+  #list{flex:1 1 auto;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-right:3px;min-height:60px}
+  #list::-webkit-scrollbar{width:5px}
+  #list::-webkit-scrollbar-thumb{background:#26313f;border-radius:4px}
+  .item{display:flex;align-items:flex-start;gap:8px;background:var(--card);border:1px solid var(--line);
+    border-radius:8px;padding:6px 7px;cursor:pointer;outline:none;
+    opacity:0;transform:translateX(-10px);animation:slideIn .35s forwards;
+    transition:background .25s,border-color .25s}
+  .item:hover,.item:focus-visible{background:var(--card2);border-color:#2f3d4f}
+  .item.on{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.06)}
+  @keyframes slideIn{to{opacity:1;transform:none}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .cb{flex:0 0 18px;width:18px;height:18px;margin-top:1px}
+  .cb rect{fill:none;stroke:#3a4a5e;stroke-width:1.6;transition:all .25s}
+  .cb path{fill:none;stroke:#000;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:16;stroke-dashoffset:16;transition:stroke-dashoffset .3s .05s}
+  .item.on .cb rect{fill:var(--a2);stroke:var(--a2)}
+  .item.on .cb path{stroke-dashoffset:0}
+  .txt{flex:1;font-size:11px;line-height:1.35;color:#cdd6e0}
+  .txt b{color:var(--a1);font-weight:700;margin-right:2px}
+  .item.on .txt{color:#9fb0a6}
+  .info{flex:0 0 16px;width:16px;height:16px;border-radius:50%;border:1px solid #3a4a5e;color:#8a97a8;
+    font:700 10px/14px Georgia,serif;text-align:center;margin-top:1px;transition:all .2s}
+  .item:hover .info{border-color:var(--a1);color:var(--a1)}
+
+  /* ---------- RODAPÉ / PROGRESSO ---------- */
+  #foot{flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 9px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .row small{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+  #pct{font-size:15px;font-weight:800;color:#fff;min-width:44px;text-align:right}
+  .bar{position:relative;height:9px;background:#141b24;border-radius:6px;overflow:hidden;margin:4px 0 5px}
+  #fill{position:absolute;inset:0 auto 0 0;width:0;border-radius:6px;
+    background:linear-gradient(90deg,#0077b6,var(--a1));transition:width .6s cubic-bezier(.4,1.3,.5,1),background .4s}
+  #fill::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+    transform:translateX(-100%);animation:shine 2.2s infinite}
+  @keyframes shine{to{transform:translateX(100%)}}
+  #fill.full{background:linear-gradient(90deg,#16a34a,var(--a2))}
+  #status{font-size:10.5px;font-weight:600}
+  #result{font-size:10.5px;color:var(--mut);margin-top:2px;line-height:1.3}
+  #reset{background:none;border:1px solid #2f3d4f;color:var(--mut);font-size:9.5px;border-radius:5px;
+    padding:2px 7px;cursor:pointer}
+  #reset:hover{color:#fff;border-color:var(--a1)}
+
+  /* ---------- TOOLTIP ---------- */
+  #tip{position:fixed;z-index:50;max-width:250px;background:#0e1620;border:1px solid var(--a1);
+    border-radius:8px;padding:7px 9px;font-size:10.5px;line-height:1.4;color:#dbe6f0;
+    box-shadow:0 6px 22px rgba(0,163,224,.25);pointer-events:none;
+    opacity:0;transform:translateY(4px) scale(.97);transition:opacity .18s,transform .18s}
+  #tip.show{opacity:1;transform:none}
+  #tip .tt{display:block;font-size:9px;color:var(--a1);text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;font-weight:700}
+
+  /* ---------- CONCLUSÃO ---------- */
+  #ok{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.86);display:none;
+    flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;gap:10px}
+  #ok.show{display:flex;animation:fadeIn .3s}
+  #ok svg.big{width:96px;height:96px}
+  #ok .c{fill:none;stroke:var(--a2);stroke-width:4;stroke-dasharray:252;stroke-dashoffset:252}
+  #ok .k{fill:none;stroke:var(--a2);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60}
+  #ok.show .c{animation:draw .7s .1s forwards}
+  #ok.show .k{animation:draw .45s .7s forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  #ok h2{font-size:15px;color:#fff;max-width:320px;line-height:1.35}
+  #ok p{font-size:11px;color:#9fb0a6;max-width:310px}
+  #ok button{margin-top:4px;background:var(--a2);color:#04140a;border:0;border-radius:6px;font-weight:700;
+    font-size:11.5px;padding:7px 16px;cursor:pointer}
+  #confetti{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+  @media (max-height:400px){#flow{max-height:70px}#head p{display:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.item{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Fluxo interativo -->
+  <svg id="flow" viewBox="0 0 380 84" role="tablist" aria-label="Etapas do fluxo">
+    <line class="link" x1="80" y1="30" x2="165" y2="30"/>
+    <line class="link" x1="215" y1="30" x2="300" y2="30"/>
+    <line class="flowline" x1="80" y1="30" x2="165" y2="30"/>
+    <line class="flowline" x1="215" y1="30" x2="300" y2="30"/>
+    <polygon points="160,26 166,30 160,34" fill="#26313f"/>
+    <polygon points="295,26 301,30 295,34" fill="#26313f"/>
+
+    <g class="node" data-i="0" role="tab" tabindex="0">
+      <circle class="halo" cx="55" cy="30" r="22"/>
+      <circle class="bg" cx="55" cy="30" r="22"/>
+      <circle class="ring" cx="55" cy="30" r="22"/>
+      <g class="ico"><circle cx="52" cy="27" r="7"/><path d="M57 32l6 6"/></g>
+      <text class="lbl" x="55" y="66">Análise e Tratamento</text>
+      <text class="pct" x="55" y="78">0%</text>
+    </g>
+    <g class="node" data-i="1" role="tab" tabindex="0">
+      <circle class="halo" cx="190" cy="30" r="22"/>
+      <circle class="bg" cx="190" cy="30" r="22"/>
+      <circle class="ring" cx="190" cy="30" r="22"/>
+      <g class="ico"><path d="M199 33a9 9 0 1 1-2.6-9.4"/><path d="M197 19v5h-5"/></g>
+      <text class="lbl" x="190" y="66">Devolução</text>
+      <text class="pct" x="190" y="78">0%</text>
+    </g>
+    <g class="node" data-i="2" role="tab" tabindex="0">
+      <circle class="halo" cx="325" cy="30" r="22"/>
+      <circle class="bg" cx="325" cy="30" r="22"/>
+      <circle class="ring" cx="325" cy="30" r="22"/>
+      <g class="ico"><path d="M318 40V19"/><path d="M318 20h14l-3 5 3 5h-14"/></g>
+      <text class="lbl" x="325" y="66">Encerramento</text>
+      <text class="pct" x="325" y="78">0%</text>
+    </g>
+  </svg>
+
+  <div id="head"><h1></h1><p></p></div>
+  <div id="list" role="list"></div>
+
+  <div id="foot">
+    <div class="row"><small>Progresso da etapa</small><span id="pct">0%</span></div>
+    <div class="bar"><div id="fill"></div></div>
+    <div class="row"><span id="status"></span><button id="reset" type="button">Reiniciar</button></div>
+    <div id="result"></div>
+  </div>
+</div>
+
+<div id="tip"></div>
+
+<div id="ok">
+  <svg id="confetti"></svg>
+  <svg class="big" viewBox="0 0 96 96"><circle class="c" cx="48" cy="48" r="40"/><path class="k" d="M30 49l12 12 25-26"/></svg>
+  <h2 id="okMsg"></h2>
+  <p id="okRes"></p>
+  <button id="okBtn" type="button">Continuar</button>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ======================================================
+     BLOQUEIO DE CÓPIA E BOTÃO DIREITO
+     ====================================================== */
+  var block = function(e){ e.preventDefault(); e.stopPropagation(); return false; };
+  ["contextmenu","copy","cut","paste","selectstart","dragstart"].forEach(function(ev){
+    document.addEventListener(ev, block, true);
+  });
+  document.addEventListener("keydown", function(e){
+    var k = (e.key || "").toLowerCase();
+    if (e.key === "F12") return block(e);
+    if ((e.ctrlKey || e.metaKey) && ["c","x","v","a","s","u","p"].indexOf(k) > -1) return block(e);
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && ["i","j","c","k"].indexOf(k) > -1) return block(e);
+  }, true);
+
+  /* ======================================================
+     CONTEÚDO DAS ETAPAS
+     ====================================================== */
+  var I1 = ['Escolha o processo e digite o ID da demanda no painel de Edição. Pressione o botão verde "Abrir".',
+            'O quadro de edição será carregado ao lado esquerdo, abaixo do botão "recarregar".'];
+  var I2 = ['Clique no botão "✏️Editar Tudo" no canto superior esquerdo.',
+            'Esta ação evita que qualquer BOT seja disparado durante a edição da demanda.'];
+  var ISAVE = ['Clique no botão "salvar" o qual estará no topo ou no rodapé do quadro de edição.',
+               'Ao clicar no botão "editar tudo" na fase inicial desta etapa o botão "salvar" aparecerá no topo e no rodapé do quadro de edição.'];
+
+  var STEPS = [
+    {
+      title: "Análise e tratamento da demanda",
+      intro: "Para análise e tratamento da demanda, marque as seguintes tarefas já concluídas:",
+      items: [
+        I1, I2,
+        ['Preencha o campo "Data Início".',
+         'A inclusão desta data é fundamental para que o sistema reconheça que a demanda começou a ser atendida dentro do prazo.'],
+        ['Preencha o "Contato GNPO" com a sua matrícula.',
+         'Os alertas do sistema, associados ao processo objeto desta análise, serão encaminhados ao seu e-mail.'],
+        ['Altere o "Status da Demanda" para o status pertinente a esta fase do processo e o "Status do Processo" para "Em Andamento" (se este campo existir em seu processo).',
+         'O campo "Status do Processo" é utilizado pelo BOT Noturno, o campo "Status da Demanda" é usado pelo cliente demandante e pelos controladores da demanda.'],
+        ['Altere a coluna "Etapa Atual" inserindo o seu setor nela.',
+         'A coluna Etapa Atual define em qual setor a demanda está atualmente. Em alguns processos esta coluna é automática. Nestes casos apenas confira.'],
+        ['Efetue a análise da demanda.',
+         'Confira a documentação e as informações enviadas pelo cliente e efetue os procedimentos referentes ao fluxo do processo.'],
+        ['Efetue os procedimentos inerentes ao processo (comentários, marcações, edições e afins).',
+         'No bloco de comentários contido na lateral direita do quadro de edição da demanda, faça comentários, registrando dados sobre o andamento do processo.'],
+        ISAVE
+      ],
+      resPartial: "O estado atual da demanda a marcará como demanda com tratamento pendente no computo de processos do Power Bi.",
+      resLow: null,
+      resDone: "O estado atual da demanda a marcará como demanda Tratada no computo de processos do Power Bi.",
+      congrats: "Parabéns! Você concluiu a etapa de tratamento inicial da demanda com sucesso!"
+    },
+    {
+      title: "Devolução da demanda",
+      intro: "Para devolução da demanda para ajustes, marque as seguintes tarefas já concluídas:",
+      items: [
+        I1, I2,
+        ['Confira se a etapa de ANÁLISE E TRATAMENTO DA DEMANDA foi concluída.',
+         'Marque esta opção se os procedimentos da etapa anterior foram finalizados com sucesso.'],
+        ['Preencha o campo "Motivo_Retorno" ou "Feedback ao Usuário", de acordo com o tipo de processo.', null],
+        ISAVE
+      ],
+      resPartial: "A demanda ainda não pode ser devolvida!",
+      resLow: "A demanda ainda não pode ser devolvida!",
+      resDone: "Demanda apta para tratamento pelo cliente Demandante!",
+      congrats: "Parabéns! Tarefa concluída com sucesso!"
+    },
+    {
+      title: "Encerramento da demanda",
+      intro: "Para encerramento da demanda, marque as seguintes tarefas já concluídas:",
+      items: [
+        I1, I2,
+        ['Verifique se todos as solicitações pendentes na demanda foram concluídas.',
+         'Caso não exista pendências prossiga para a próxima etapa.'],
+        ['Marque o campo "data fim" da demanda. (Jamais deixe este campo sem preenchimento ao encerrar a demanda).',
+         'Este campo é extremamente importante para computar o tempo médio gasto para encerrar as demandas.'],
+        ['Faça uma revisão da demanda, leia os comentários laterais, observando se existe algum fato comunicado por qualquer membro da equipe.', null],
+        ['Efetue a conclusão da demanda usando o BOT do sistema.', null],
+        ISAVE
+      ],
+      resPartial: "A demanda ainda não pode ser Concluída!",
+      resLow: "A demanda ainda não pode ser Concluída!",
+      resDone: "Demanda Concluída com sucesso!",
+      congrats: "Parabéns! Tarefa finalizada!"
+    }
+  ];
+
+  /* ======================================================
+     ESTADO E ELEMENTOS
+     ====================================================== */
+  var state = STEPS.map(function(s){ return s.items.map(function(){ return false; }); });
+  var cur = 0, shownPct = 0, animId = null;
+  var $ = function(id){ return document.getElementById(id); };
+  var list = $("list"), head = $("head"), tip = $("tip");
+  var nodes = Array.prototype.slice.call(document.querySelectorAll(".node"));
+  var CIRC = 2 * Math.PI * 22;
+
+  nodes.forEach(function(n){
+    var r = n.querySelector(".ring");
+    r.style.strokeDasharray = CIRC;
+    r.style.strokeDashoffset = CIRC;
+    n.addEventListener("click", function(){ select(+n.dataset.i); });
+    n.addEventListener("keydown", function(e){
+      if (e.key === "Enter" || e.key === " "){ e.preventDefault(); select(+n.dataset.i); }
+    });
+  });
+
+  function pctOf(i){
+    var a = state[i], c = a.filter(Boolean).length;
+    return Math.round(c / a.length * 100);
+  }
+
+  /* ---------- Render da etapa ---------- */
+  function select(i){
+    cur = i; hideTip();
+    nodes.forEach(function(n, k){
+      n.classList.toggle("active", k === i);
+      n.setAttribute("aria-selected", k === i);
+    });
+    var s = STEPS[i];
+    head.style.animation = "none"; void head.offsetWidth; head.style.animation = "";
+    head.querySelector("h1").textContent = s.title;
+    head.querySelector("p").textContent = s.intro;
+
+    list.innerHTML = "";
+    s.items.forEach(function(it, k){
+      var el = document.createElement("div");
+      el.className = "item" + (state[i][k] ? " on" : "");
+      el.setAttribute("role", "checkbox");
+      el.setAttribute("tabindex", "0");
+      el.setAttribute("aria-checked", state[i][k]);
+      el.style.animationDelay = (k * 45) + "ms";
+      el.innerHTML =
+        '<svg class="cb" viewBox="0 0 18 18"><rect x="1" y="1" width="16" height="16" rx="4"/><path d="M4.5 9.5l3 3 6-7"/></svg>' +
+        '<span class="txt"><b>' + (k + 1) + '.</b></span>' +
+        (it[1] ? '<span class="info" aria-hidden="true">i</span>' : '');
+      el.querySelector(".txt").appendChild(document.createTextNode(it[0]));
+
+      el.addEventListener("click", function(e){
+        if (e.target.classList.contains("info")){ e.stopPropagation(); toggleTipAt(el, it[1]); return; }
+        toggle(k, el);
+      });
+      el.addEventListener("keydown", function(e){
+        if (e.key === "Enter" || e.key === " "){ e.preventDefault(); toggle(k, el); }
+      });
+      if (it[1]){
+        el.addEventListener("mouseenter", function(e){ showTip(it[1], e.clientX, e.clientY); });
+        el.addEventListener("mousemove", function(e){ placeTip(e.clientX, e.clientY); });
+        el.addEventListener("mouseleave", hideTip);
+        el.addEventListener("focus", function(){ var r = el.getBoundingClientRect(); showTip(it[1], r.left + 20, r.bottom - 4); });
+        el.addEventListener("blur", hideTip);
+      }
+      list.appendChild(el);
+    });
+    list.scrollTop = 0;
+    update(false);
+  }
+
+  function toggle(k, el){
+    state[cur][k] = !state[cur][k];
+    el.classList.toggle("on", state[cur][k]);
+    el.setAttribute("aria-checked", state[cur][k]);
+    update(true);
+  }
+
+  /* ---------- Progresso / status / resultado ---------- */
+  function update(fromUser){
+    var p = pctOf(cur), s = STEPS[cur];
+    var fill = $("fill");
+    fill.style.width = p + "%";
+    fill.classList.toggle("full", p === 100);
+    countTo(p);
+
+    var st = $("status"), rs = $("result");
+    if (p === 100){
+      st.textContent = "Status: Etapa Concluída com Sucesso."; st.style.color = "var(--a2)";
+      rs.textContent = "Resultado: " + s.resDone; rs.style.color = "#9fe3b6";
+    } else if (p >= 50){
+      st.textContent = "Status: Etapa Parcialmente Concluída."; st.style.color = "var(--warn)";
+      rs.textContent = "Resultado: " + s.resPartial; rs.style.color = "var(--mut)";
+    } else {
+      st.textContent = p === 0 ? "Status: Etapa não iniciada." : "Status: Etapa em andamento.";
+      st.style.color = "var(--mut)";
+      rs.textContent = s.resLow ? "Resultado: " + s.resLow : "Resultado: marque as tarefas concluídas para atualizar o resultado.";
+      rs.style.color = "var(--mut)";
+    }
+
+    nodes.forEach(function(n, i){
+      var pi = pctOf(i);
+      n.querySelector(".ring").style.strokeDashoffset = CIRC * (1 - pi / 100);
+      n.querySelector(".pct").textContent = pi + "%";
+      n.classList.toggle("done", pi === 100);
+    });
+
+    if (fromUser && p === 100) setTimeout(function(){ celebrate(s); }, 450);
+  }
+
+  function countTo(target){
+    cancelAnimationFrame(animId);
+    var from = shownPct, t0 = null, dur = 500;
+    function step(t){
+      if (!t0) t0 = t;
+      var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      shownPct = Math.round(from + (target - from) * e);
+      $("pct").textContent = shownPct + "%";
+      if (k < 1) animId = requestAnimationFrame(step);
+    }
+    animId = requestAnimationFrame(step);
+  }
+
+  $("reset").addEventListener("click", function(){
+    state[cur] = state[cur].map(function(){ return false; });
+    select(cur);
+  });
+
+  /* ---------- Tooltip ---------- */
+  var tipTimer = null, tipFor = null;
+  function showTip(text, x, y){
+    clearTimeout(tipTimer);
+    tip.innerHTML = '<span class="tt">Legenda</span>';
+    tip.appendChild(document.createTextNode(text));
+    tipFor = text;
+    placeTip(x, y);
+    tipTimer = setTimeout(function(){ tip.classList.add("show"); }, 120);
+  }
+  function placeTip(x, y){
+    var w = tip.offsetWidth, h = tip.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
+    var left = x + 14, top = y + 16;
+    if (left + w > vw - 6) left = Math.max(6, vw - w - 6);
+    if (top + h > vh - 6) top = Math.max(6, y - h - 12);
+    tip.style.left = left + "px"; tip.style.top = top + "px";
+  }
+  function hideTip(){ clearTimeout(tipTimer); tip.classList.remove("show"); tipFor = null; }
+  function toggleTipAt(el, text){
+    if (tipFor === text && tip.classList.contains("show")){ hideTip(); return; }
+    var r = el.querySelector(".info").getBoundingClientRect();
+    showTip(text, r.left - 120, r.bottom);
+  }
+  document.addEventListener("touchstart", function(e){
+    if (!e.target.closest || !e.target.closest(".info")) hideTip();
+  }, {passive:true});
+  list.addEventListener("scroll", hideTip, {passive:true});
+
+  /* ---------- Conclusão ---------- */
+  function celebrate(s){
+    if (pctOf(cur) !== 100) return;
+    hideTip();
+    $("okMsg").textContent = s.congrats;
+    $("okRes").textContent = s.resDone;
+    var ok = $("ok");
+    ok.classList.remove("show"); void ok.offsetWidth; ok.classList.add("show");
+    confetti();
+    $("okBtn").focus();
+  }
+  $("okBtn").addEventListener("click", function(){ $("ok").classList.remove("show"); });
+
+  function confetti(){
+    var svg = $("confetti"), NS = "http://www.w3.org/2000/svg";
+    var W = window.innerWidth, H = window.innerHeight;
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    svg.innerHTML = "";
+    var colors = ["#22c55e","#00a3e0","#f5a524","#ffffff","#38bdf8"];
+    for (var i = 0; i < 46; i++){
+      var r = document.createElementNS(NS, "rect");
+      var x = W / 2, y = H * 0.32, sz = 4 + Math.random() * 5;
+      r.setAttribute("width", sz); r.setAttribute("height", sz * 0.6);
+      r.setAttribute("x", x); r.setAttribute("y", y);
+      r.setAttribute("fill", colors[i % colors.length]);
+      svg.appendChild(r);
+      var ang = Math.random() * Math.PI * 2, dist = 70 + Math.random() * (W * 0.45);
+      var dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist * 0.7 + 120 + Math.random() * 80;
+      r.animate([
+        {transform:"translate(0,0) rotate(0deg)", opacity:1},
+        {transform:"translate(" + dx + "px," + dy + "px) rotate(" + (360 + Math.random() * 540) + "deg)", opacity:0}
+      ], {duration:1300 + Math.random() * 900, easing:"cubic-bezier(.2,.7,.4,1)", fill:"forwards"});
+    }
+  }
+
+  select(0);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abrir Processo por ID</title>
+<style>
+  :root {
+    --azul: #165f80;
+    --azul-hover: #1b7099;
+    --verde: #3a7d22;
+    --verde-hover: #45922a;
+    --borda: #0d2a33;
+    --texto: #ffffff;
+    --erro: #c0392b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #ffffff;
+    font-family: "Century Gothic", "Futura", "Segoe UI", Arial, sans-serif;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .barra {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    padding: 32px 16px 0;
+    max-width: 840px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Menu suspenso ---------- */
+  .select-wrap {
+    position: relative;
+    flex: 2.5 1 0;
+    min-width: 0;
+  }
+
+  .select-wrap select {
+    width: 100%;
+    height: 46px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: var(--azul);
+    color: var(--texto);
+    border: 2px solid var(--borda);
+    border-radius: 8px;
+    padding: 0 56px 0 16px;
+    font-family: inherit;
+    font-size: 21px;
+    font-style: italic;
+    text-align: center;
+    text-align-last: center;
+    cursor: pointer;
+    outline: none;
+    transition: background .2s, box-shadow .2s;
+  }
+
+  .select-wrap select:hover { background: var(--azul-hover); }
+  .select-wrap select:focus { box-shadow: 0 0 0 3px rgba(22, 95, 128, .35); }
+
+  .select-wrap select option {
+    background: #ffffff;
+    color: #1e2a30;
+    font-style: normal;
+    font-size: 16px;
+  }
+
+  .select-wrap::after {
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    width: 0;
+    height: 0;
+    transform: translateY(-38%);
+    border-left: 19px solid transparent;
+    border-right: 19px solid transparent;
+    border-top: 22px solid #ffffff;
+    filter: drop-shadow(0 0 1.5px var(--borda)) drop-shadow(0 0 .5px var(--borda));
+    pointer-events: none;
+  }
+
+  /* ---------- Campo ID ---------- */
+  .campo-id {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 46px;
+    background: var(--azul);
+    color: var(--texto);
+    border: 2px solid var(--borda);
+    border-radius: 8px;
+    padding: 0 10px;
+    font-family: inherit;
+    font-size: 21px;
+    text-align: center;
+    outline: none;
+    transition: background .2s, box-shadow .2s;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  .campo-id::placeholder { color: rgba(255,255,255,.92); font-style: italic; }
+  .campo-id:hover { background: var(--azul-hover); }
+  .campo-id:focus { box-shadow: 0 0 0 3px rgba(22, 95, 128, .35); }
+
+  /* ---------- Botão Abrir ---------- */
+  .btn-abrir {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 46px;
+    background: var(--verde);
+    color: var(--texto);
+    border: 2px solid var(--borda);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 25px;
+    cursor: pointer;
+    transition: background .2s, transform .1s, box-shadow .2s;
+  }
+
+  .btn-abrir:hover { background: var(--verde-hover); box-shadow: 0 3px 10px rgba(58, 125, 34, .3); }
+  .btn-abrir:active { transform: translateY(1px); }
+
+  /* ---------- Mensagem / erro ---------- */
+  .msg {
+    max-width: 840px;
+    margin: 10px auto 0;
+    padding: 0 16px;
+    min-height: 20px;
+    font-size: 14px;
+    color: var(--erro);
+    text-align: center;
+  }
+
+  .invalido {
+    animation: tremer .3s;
+    box-shadow: 0 0 0 3px rgba(192, 57, 43, .45) !important;
+  }
+
+  @keyframes tremer {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+
+  @media (max-width: 600px) {
+    .barra { flex-wrap: wrap; }
+    .select-wrap { flex-basis: 100%; }
+    .select-wrap select, .campo-id { font-size: 18px; }
+    .btn-abrir { font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="barra">
+    <div class="select-wrap">
+      <select id="processo" aria-label="Escolha o Processo">
+        <option value="" selected disabled hidden>Escolha o Processo</option>
+      </select>
+    </div>
+
+    <input id="idProcesso" class="campo-id" type="text" inputmode="numeric"
+           placeholder="Digite o ID" autocomplete="off" aria-label="Digite o ID">
+
+    <button id="btnAbrir" class="btn-abrir" type="button">Abrir</button>
+  </div>
+
+  <div id="msg" class="msg" role="alert"></div>
+
+<script>
+  /* ===== Processos: nome -> URL base (até "?ID=") ===== */
+  const PROCESSOS = [
+    ["Aditivos",                     "https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_ADITIVOS_C_CONT/DispForm.aspx?ID="],
+    ["Análise de Projetos",          "https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_PROJETOS_ANALISE/DispForm.aspx?ID="],
+    ["Apoio GNPO",                   "https://copasa.sharepoint.com/sites/painel-inteligente/Lists/Apoio%20%20Registro%20de%20Demandas/DispForm.aspx?ID="],
+    ["Aquisições",                   "https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_CT_AQUISICOES/DispForm.aspx?ID="],
+    ["Contratos Continuados",        "https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_CONTRATOS_CONTIN_LIC/DispForm.aspx?ID="],
+    ["Novas Contratações",           "https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_CT_CONT_DIRETA/DispForm.aspx?ID="],
+    ["Nota Técnica",                 "https://copasa.sharepoint.com/sites/painel-inteligente/Lists/Nota%20Tcnica/DispForm.aspx?ID="],
+    ["PEPs e POs",                   "https://copasa.sharepoint.com/sites/painel-inteligente/Lists/Alterao%20de%20PEPs%20e%20POs/DispForm.aspx?ID="],
+    ["Remanejamento - Custeio",      "https://copasa.sharepoint.com/sites/painel-inteligente/Lists/Remanejamento%20Custeio/DispForm.aspx?ID="],
+    ["Remanejamento - Investimento", "https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_PROC_REMANEJAMENTO/DispForm.aspx?ID="],
+    ["Universalização",              "https://copasa.sharepoint.com/sites/painel-inteligente/Lists/TBL_PROJETOS_UNIVERSALIZA/DispForm.aspx?ID="]
+  ];
+
+  const selProcesso = document.getElementById("processo");
+  const inpId       = document.getElementById("idProcesso");
+  const btnAbrir    = document.getElementById("btnAbrir");
+  const msg         = document.getElementById("msg");
+
+  /* Carrega o menu suspenso */
+  PROCESSOS.forEach(([nome, url]) => {
+    const opt = document.createElement("option");
+    opt.value = url;
+    opt.textContent = nome;
+    selProcesso.appendChild(opt);
+  });
+
+  /* Aceita apenas dígitos no campo ID */
+  inpId.addEventListener("input", () => {
+    inpId.value = inpId.value.replace(/\D/g, "");
+    limparErro();
+  });
+  selProcesso.addEventListener("change", limparErro);
+
+  function marcarErro(el, texto) {
+    msg.textContent = texto;
+    el.classList.remove("invalido");
+    void el.offsetWidth; // reinicia a animação
+    el.classList.add("invalido");
+    el.focus();
+  }
+
+  function limparErro() {
+    msg.textContent = "";
+    selProcesso.classList.remove("invalido");
+    inpId.classList.remove("invalido");
+  }
+
+  function abrir() {
+    const base = selProcesso.value;
+    const id   = inpId.value.trim();
+
+    if (!base) { marcarErro(selProcesso, "Escolha um processo."); return; }
+    if (!/^\d+$/.test(id)) { marcarErro(inpId, "Digite um ID numérico válido."); return; }
+
+    window.open(base + id, "_self");
+  }
+
+  btnAbrir.addEventListener("click", abrir);
+  inpId.addEventListener("keydown", e => { if (e.key === "Enter") abrir(); });
+
+  /* ===== Bloqueio de cópia e botão direito ===== */
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  ["copy", "cut", "dragstart"].forEach(evt =>
+    document.addEventListener(evt, e => e.preventDefault())
+  );
+  document.addEventListener("selectstart", e => {
+    if (e.target !== inpId) e.preventDefault();
+  });
+  document.addEventListener("keydown", e => {
+    const k = (e.key || "").toLowerCase();
+    const ctrl = e.ctrlKey || e.metaKey;
+    if (
+      k === "f12" ||
+      (ctrl && ["c", "x", "u", "s", "p", "a"].includes(k)) ||
+      (ctrl && e.shiftKey && ["i", "j", "c"].includes(k))
+    ) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
+</script>
+</body>
+</html>

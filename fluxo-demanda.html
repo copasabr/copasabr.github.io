@@ -74,7 +74,7 @@
   .row small{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
   #pct{font-size:15px;font-weight:800;color:#fff;min-width:44px;text-align:right}
   .bar{position:relative;height:9px;background:#141b24;border-radius:6px;overflow:hidden;margin:4px 0 5px}
-  #fill{position:absolute;inset:0 auto 0 0;width:0;border-radius:6px;
+  #fill{position:absolute;inset:0 auto 0 0;width:0;border-radius:6px;overflow:hidden;
     background:linear-gradient(90deg,#0077b6,var(--a1));transition:width .6s cubic-bezier(.4,1.3,.5,1),background .4s}
   #fill::after{content:"";position:absolute;inset:0;
     background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
@@ -213,7 +213,7 @@
          'Os alertas do sistema, associados ao processo objeto desta análise, serão encaminhados ao seu e-mail.'],
         ['Altere o "Status da Demanda" para o status pertinente a esta fase do processo e o "Status do Processo" para "Em Andamento" (se este campo existir em seu processo).',
          'O campo "Status do Processo" é utilizado pelo BOT Noturno, o campo "Status da Demanda" é usado pelo cliente demandante e pelos controladores da demanda.'],
-        ['Altere a coluna "Etapa Atual" inserindo o setor responsável.',
+        ['Altere a coluna "Etapa Atual" inserindo o seu setor nela.',
          'A coluna Etapa Atual define em qual setor a demanda está atualmente. Em alguns processos esta coluna é automática. Nestes casos apenas confira.'],
         ['Efetue a análise da demanda.',
          'Confira a documentação e as informações enviadas pelo cliente e efetue os procedimentos referentes ao fluxo do processo.'],
@@ -233,7 +233,10 @@
         I1, I2,
         ['Confira se a etapa de ANÁLISE E TRATAMENTO DA DEMANDA foi concluída.',
          'Marque esta opção se os procedimentos da etapa anterior foram finalizados com sucesso.'],
-        ['Preencha o campo "Motivo_Retorno" ou "Feedback ao Usuário", de acordo com o tipo de processo.', null],
+        ['Preencha o campo "Motivo_Retorno" ou "Feedback ao Usuário", de acordo com o tipo de processo.',
+         'O campo "Motivo_Retorno" ou "Feedback ao Cliente" será enviado pelo BOT como componente da mensagem ao cliente demandante.'],
+        ['Acione o "BOT de Devolução" para devolver a demanda para ajustes.',
+         'O BOT acionará o cliente via e-mail solicitando os ajustes de documentação e outras informações solicitadas no preenchimento anterior.'],
         ISAVE
       ],
       resPartial: "A demanda ainda não pode ser devolvida!",
